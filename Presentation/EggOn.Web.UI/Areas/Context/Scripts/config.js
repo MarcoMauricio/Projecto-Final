@@ -5,9 +5,8 @@
 
             .state('manager.context', {
                 url: '/context',
-                abstract: true,
+                abstract: false,
                 templateUrl: '/Areas/Context/Views/Index.html',
-                controller: 'ContextController'
             })
 
                 .state('manager.context.dashboard', {
