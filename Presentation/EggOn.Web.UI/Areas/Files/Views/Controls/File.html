@@ -1,0 +1,20 @@
+﻿<div class="input-append fileupload">
+    <span class="uneditable-input span3" style="white-space: normal;">
+        <span ng-show="file && !loading">
+            <i class="fa fa-file"></i> <a href="#" ng-click="downloadFile(file)">{{ file.Name }}</a> ({{ file.Size | bytes }})
+        </span>
+        <span ng-show="!file && !loading">
+            <i class="fa fa-cloud-upload"></i> Select file.
+        </span>
+        <span ng-show="loading">
+            <i class="fa fa-spinner fa-spin"></i> Uploading file...
+        </span>
+    </span>
+    <span style="float: right">
+    <span class="btn btn-default btn-file btn-xs" ng-disabled="readonly">
+        <span>Select File</span>
+        <input type="file" accept="{{ formats }}" />
+    </span>
+    <span class="btn btn-default btn-default btn-xs" ng-click="clear(file)" ng-disabled="readonly">Clear</span>
+    </span>
+</div>

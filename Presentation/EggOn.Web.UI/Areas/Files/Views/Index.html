@@ -1,0 +1,27 @@
+﻿<div class="row">
+    <div class="col-md-3">
+        <nav>
+            <ul class="nav nav-tabs nav-stacked side-menu" >
+                <li ng-class="{active: $state.is('manager.files.create')}"><a href="/files/create"><i class="fa fa-plus-sign"></i> Create/Link Repository <i class="fa fa-chevron-right"></i></a></li>
+            </ul>
+
+            <div ng-show="showLoadingMessage" class="alert alert-info">
+                <i class="fa fa-spinner fa-spin"></i> Loading repositories...
+            </div>
+
+            <div ng-show="showErrorMessage" class="alert alert-danger">
+                Error while loading repositories. <a href="#"n asg-click="loadRepositories()">Try again.</a>
+            </div>
+
+            <ul class="nav nav-tabs nav-stacked side-menu" ng-show="repositories.length != 0">
+                <li ng-repeat="repository in repositories" ng-class="{active: $stateParams.repositoryId==repository.Id }">
+                    <a ng-href="/files/{{repository.Id}}">{{repository.Name}} <i class="fa fa-chevron-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="col-md-9">
+        <section ui-view autoscroll="false"></section>
+    </div>
+</div>

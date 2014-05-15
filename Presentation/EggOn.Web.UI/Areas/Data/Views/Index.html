@@ -1,0 +1,27 @@
+﻿<div class="row">
+    <div class="col-md-3">
+        <nav>
+            <ol class="nav nav-tabs nav-stacked side-menu" >
+                <li ng-class="{active: $state.includes('manager.data.create')}"><a href="/data/create"><i class="fa fa-plus-sign"></i> Create/Link Container <i class="fa fa-chevron-right"></i></a></li>
+            </ol>
+
+            <div ng-show="showLoadingMessage" class="alert alert-info">
+                <i class="fa fa-spinner fa-spin"></i> Loading containers...
+            </div>
+
+            <div ng-show="showErrorMessage" class="alert alert-danger">
+                Error while loading containers. <br /><a href="#" ng-click="loadContainers()">Try again.</a>
+            </div>
+
+            <ul class="nav nav-tabs nav-stacked side-menu" ng-show="containers.length != 0">
+                <li ng-repeat="container in containers" ng-class="{active: $stateParams.containerId==container.Id }">
+                    <a ng-href="/data/{{container.Id}}" style="padding-bottom: 5px;"><span style="display: inline-block; max-width: 80%; text-overflow: ellipsis; overflow: hidden;">{{container.Name}}</span><i class="fa fa-chevron-right"></i></a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="col-md-9">
+        <section ui-view autoscroll="false"></section>
+    </div>
+</div>

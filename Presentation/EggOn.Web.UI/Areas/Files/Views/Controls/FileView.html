@@ -1,0 +1,39 @@
+﻿<div class="btn-toolbar file-toolbar">
+    <div class="btn-group file-actions">
+        <a href="#" class="btn btn-primary" ng-class="{ disabled: selectedFile == null }" ng-click="openFile(selectedFile)"><i class="fa fa-eye"></i> Open</a>
+        <a href="#" class="btn btn-info" ng-class="{ disabled: selectedFile == null || selectedFile.Type == 2 }" ng-click="downloadFile(selectedFile)"><i class="fa fa-cloud-download"></i> Download</a>
+        <a href="#" class="btn btn-danger" ng-class="{ disabled: selectedFile == null }" ng-click="deleteFile(selectedFile)"><i class="fa fa-trash-o"></i> Delete</a>
+        <a href="#" class="btn btn-warning" ng-class="{ disabled: selectedFile == null }" ng-click="renameFile(selectedFile)"><i class="fa fa-edit"></i> Rename</a>
+    </div>
+    <div class="btn-group file-global-actions">
+        <a href="#" class="btn btn-default" ng-click="createFolder()"><i class="fa fa-plus"></i> New Folder</a>
+        <span class="btn btn-default fileinput-button">
+            <i class="fa fa-cloud-upload"></i>
+            <span>Upload Files...</span>
+            <input type="file" multiple onchange="angular.element(this).scope().uploadFiles(this)">
+        </span>
+    </div>
+</div>
+
+<ul class="breadcrumb file-path" style="margin-top: 10px;">
+    <li ng-class="{ active: breadcrumbs.length == 0 }">
+        <a href="#" ng-hide="$last" ng-click="openFile(null)" >{{ repository.Name }}</a>
+    </li>
+    <li ng-repeat="breadcrumb in breadcrumbs" ng-class="{ active: $last }">
+        <a href="#" ng-click="openFile(breadcrumb)" >{{ breadcrumb.Name }}</a>
+    </li>
+</ul>
+
+<div class="list-group file-list">
+
+    <a href="#" class="list-group-item file" title="{{ file.Name }}" hidefocus="hideFocus" ng-class="{ active: selectedFile == file }" ng-click="selectItem(file)" ng-dblclick="openFile(file)" ng-repeat="file in files">
+        <i class="filename-icon fa" ng-class="{'fa-file-o': file.Type == 1, 'fa-folder-o': file.Type == 2}"></i>
+        {{ file.Name }} <span class="pull-right"><span ng-show="file.Type == 1">{{ file.Size | bytes }} -</span> {{ file.UploadDate | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+    </a>
+
+</div>
+
+<div ng-show="!files || files.length == 0 || !files || files.length == 0" class="alert alert-info">
+    No files found.
+</div>
+

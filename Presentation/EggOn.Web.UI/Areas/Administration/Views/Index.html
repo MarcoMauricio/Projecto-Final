@@ -1,0 +1,25 @@
+﻿<div class="row">
+    <div class="col-md-3">
+        <nav>
+            <h4>Core Module</h4>
+
+            <ol class="nav nav-pills nav-stacked side-menu" >
+                <li ng-class="{active: $state.includes('manager.admin.sections.users')}">
+                    <a href="/admin/users"><i class="fa fa-user fa-fw"></i> Users <i class="fa fa-chevron-right fa-fw"></i></a>
+                </li>
+
+                <li ng-class="{active: $state.includes('manager.admin.sections.roles')}" style="display: none">
+                    <a href="/admin/roles"><i class="fa fa-suitcase fa-fw"></i> Roles <i class="fa fa-chevron-right fa-fw"></i></a>
+                </li>
+
+                <li ng-class="{active: $state.includes('manager.admin.sections.layout')}">
+                    <a href="/admin/layout"><i class="fa fa-picture-o fa-fw"></i> Layout <i class="fa fa-chevron-right fa-fw"></i></a>
+                </li>
+            </ol>
+        </nav>
+    </div>
+    <div class="col-md-9">
+        <section ui-view autoscroll="false"></section>
+    </div>
+</div>
+

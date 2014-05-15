@@ -1,0 +1,67 @@
+﻿<ul class="breadcrumb page-title">
+    <li><a href="/data">Data</a></li>
+    <li><a href="/data/{{ container.Id }}">{{ container.Name }}</a></li>
+    <li class="active" ng-show="creatingRecord">Create Record</li>
+    <li class="active" ng-hide="creatingRecord">Edit Record</li>
+</ul>
+
+<legend class="collapsable" ng-click="collapseView = !collapseView">
+    <span ng-show="creatingRecord">Create Record</span>
+    <span ng-hide="creatingRecord">View Record</span>
+    <i class="fa fa-minus-square-o" ng-show="!collapseView"></i>
+    <i class="fa fa-plus-square-o" ng-show="collapseView"></i>
+</legend>
+
+<form name="recordForm" class="form-horizontal collapseContent" role="form" novalidate collapse="collapseView" ng-submit="submitRecord()">
+    
+    <div ng-show="loading" class="alert alert-info">
+        <i class="fa fa-spinner fa-spin"></i> <span>Loading record fields and data...</span>
+    </div>
+
+    <div class="form-group" ng-hide="loading" ng-repeat="field in container.Fields | orderBy:'Order'">
+        <label for="{{ field.ColumnName }}" class="col-md-3 control-label">{{ field.Name }}:</label>
+        <div class="col-md-6" ng-switch="getTypeName(field)">
+            <input ng-switch-when="Number" name="{{ field.ColumnName }}" type="number" ng-model="record[field.ColumnName]" class="form-control" ng-required="typeIsPrimary(field)" />
+
+            <input ng-switch-when="Unique Id" name="{{ field.ColumnName }}" type="text" ng-model="record[field.ColumnName]" class="form-control" ng-required="typeIsPrimary(field)" />
+
+            <input ng-switch-when="Password" name="{{ field.ColumnName }}" type="password" ng-model="record[field.ColumnName]" class="form-control" ng-required="typeIsPrimary(field)" />
+
+            <textarea ng-switch-when="Text Box" name="{{ field.ColumnName }}" ng-model="record[field.ColumnName]" class="form-control"></textarea>
+            
+            <span ng-switch-when="Label">{{ field.DefaultValue }}</span>
+
+            <file ng-switch-when="File" name="{{ field.ColumnName }}" ng-model="record[field.ColumnName]" class="form-control" formats="*/*"></file>
+
+            <div ng-switch-when="Date and Time" class="input-group" datetime-picker ng-model="record[field.ColumnName]">
+                <input name="{{ field.ColumnName }}" type='text' class="form-control" placeholder="Date and Time" />
+                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+            </div>
+           
+            <input ng-switch-default name="{{ field.ColumnName }}" type="text" ng-model="record[field.ColumnName]" class="form-control" />
+
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-group">
+        <div class="col-md-offset-3 col-md-6">
+            <button type="submit" class="btn btn-primary" ng-disabled="saving || recordForm.$invalid"><i class="fa fa-spinner fa-spin" ng-show="saving"></i> Save Record</button>
+            <button type="button" class="btn btn-default" ng-click="goBack()">Go Back to Record List</button>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div ng-show="saveSuccess" class="alert alert-success" style="text-align: center">
+            <button type="button" class="close" ng-click="saveSuccess = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-ok"></i> Success!</strong> The record was saved successfully.</span>
+        </div>
+
+        <div ng-show="saveError" class="alert alert-danger" style="text-align: center">
+            <button type="button" class="close" ng-click="saveError = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-times"></i> Error!</strong> {{ errorMessage || 'There was a error while saving the record!' }}</span>
+        </div>
+    </div>
+
+</form>

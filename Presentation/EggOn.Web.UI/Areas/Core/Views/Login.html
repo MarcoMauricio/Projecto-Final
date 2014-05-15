@@ -1,0 +1,29 @@
+﻿<div class="container-signin">
+    <form name="FormSignIn" class="form-signin" role="form" ng-show="showLoginForm" ng-submit="submitLoginForm()">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        
+        <div class="input-wrap">
+            <i class="fa fa-envelope"></i>
+            <input type="email" class="form-control" placeholder="Email address" ng-model="username" ng-disabled="showSpinner" required autofocus>
+        </div>
+
+        <div class="input-wrap">
+            <i class="fa fa-key"></i>
+            <input type="password" class="form-control" placeholder="Password" ng-model="password" ng-disabled="showSpinner" required>
+        </div>
+
+        <label class="checkbox">
+            <input type="checkbox" value="remember-me"> Remember me
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-disabled="!FormSignIn.$valid || showSpinner"><i class="fa fa-sign-in" ng-hide="showSpinner"></i><i class="fa fa-spinner fa-spin" ng-show="showSpinner"></i> Sign in</button>
+    
+        <div ng-show="showError" class="alert alert-danger alert-dismissable" style="margin: 20px 0 0">
+            <button type="button" class="close" aria-hidden="true" ng-click="showError = false">&times;</button>
+            <strong>Error!</strong><br /> {{ errorMessage }}
+        </div>
+
+        <div ng-show="showValidation" class="alert alert-success" style="margin: 20px 0 0">
+            <strong>User was validated!</strong><br /> Congratulations! Login to go to the EggOn Manager.
+        </div>
+    </form>
+</div>

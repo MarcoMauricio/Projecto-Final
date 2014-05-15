@@ -1,0 +1,50 @@
+﻿<div class="modal-header">
+    <h1 ng-hide="field.Id">Add Field</h1>
+    <h1 ng-show="field.Id">Edit Field</h1>
+</div>
+
+<form name="fieldForm" class="form-horizontal" role="form" novalidate ng-submit="saveField()">
+    <div class="modal-body">
+
+        <div class="form-group has-feedback">
+            <label for="fieldName" class="col-md-3 control-label">Name:</label>
+            <div class="col-md-6">
+                <input name="fieldName" type="text" class="form-control" ng-model="field.Name" required />
+                <i class="form-control-feedback"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="fieldType" class="col-md-3 control-label">Type:</label>
+            <div class="col-md-4">
+                <select name="fieldType" class="form-control" ng-model="field.FieldTypeId" ng-options="t.Id as t.Name for t in fieldTypes" required>
+                </select>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="form-group">
+            <label for="fieldDefaultValue" class="col-md-3 control-label">Default Value:</label>
+            <div class="col-md-6">
+                <textarea name="fieldDefaultValue" type="text" class="form-control" ng-model="field.DefaultValue"></textarea>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="form-group has-feedback">
+            <label for="fieldShowInList" class="col-md-3 control-label">Show in List:</label>
+            <div class="col-md-6">
+                <input name="fieldShowInList" type="checkbox" style="margin-top: 12px;" ng-model="field.ShowInList" />
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" ng-disabled="fieldForm.$invalid">Save Field</button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    </div>
+
+</form>

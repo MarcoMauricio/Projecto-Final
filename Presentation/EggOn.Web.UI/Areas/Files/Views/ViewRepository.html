@@ -1,0 +1,18 @@
+﻿<ul class="breadcrumb page-title">
+    <li><a href="/Files">Files</a></li>
+    <li class="active">{{repository.Name}}</li>
+</ul>
+
+<legend class="collapsable" ng-click="collapseView = !collapseView">
+    <span>View Repository</span>
+    <i class="fa fa-minus-square-o" ng-show="!collapseView"></i>
+    <i class="fa fa-plus-square-o" ng-show="collapseView"></i>
+</legend>
+
+<form name="viewRepositoryForm" class="form-horizontal collapseContent" role="form" novalidate collapse="collapseView">
+    <file-view repository-id="repository.Id" path="path" selected-file="selectedFile"></file-view>
+
+    <div class="col-md-12">
+        <button type="button" class="btn btn-danger pull-right" ng-click="deleteRepository()"><i class="fa fa-warning-sign"></i> Delete Container</button>
+    </div>
+</form>

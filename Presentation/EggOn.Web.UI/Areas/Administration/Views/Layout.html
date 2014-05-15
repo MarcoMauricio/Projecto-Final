@@ -1,0 +1,70 @@
+﻿<ol class="breadcrumb page-title">
+    <li><a href="/admin"><i class="fa fa-wrench"></i> Administration</a></li>
+    <li><a href="/admin">Core</a></li>
+    <li class="active">Layout</li>
+</ol>
+
+<legend class="collapsable" ng-click="collapseContent = !collapseContent">
+    <span>Layout</span>
+    <i class="fa fa-minus-square-o" ng-show="!collapseContent"></i>
+    <i class="fa fa-plus-square-o" ng-show="collapseContent"></i>
+</legend>
+
+<form name="layoutForm" ng-submit="submit(layout)" class="form-horizontal collapseContent" role="form" novalidate collapse="collapseContent">
+    <div class="form-group">
+        <label for="layoutLogo" class="col-md-3 control-label">Logo:</label>
+        <div class="col-md-5">
+            <file name="layoutLogo" ng-model="layout.LogoId" class="form-control" formats="image/*"></file>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="layoutBarBackColor" class="col-md-3 control-label">Bar Background Color:</label>
+        <div class="col-md-3">
+            <div class="input-group input-append color" ng-model="layout.BarBackColor" color-picker data-color="{{ layout.BarBackColor }}" data-color-format="hex">
+                <input type="text" class="form-control" placeholder="Color" name="layoutBarBackColor" ng-model="layout.BarBackColor" />
+                <span class="input-group-addon add-on"><i style="background-color: {{ layout.BarBackColor }}"></i></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="layoutBarButtonColor" class="col-md-3 control-label">Bar Selected Button Color:</label>
+        <div class="col-md-3">
+            <div class="input-group input-append color" ng-model="layout.BarButtonColor" color-picker data-color="{{ layout.BarButtonColor }}" data-color-format="hex">
+                <input type="text" class="form-control" placeholder="Color" name="layoutBarButtonColor" ng-model="layout.BarButtonColor" />
+                <span class="input-group-addon add-on"><i style="background-color: {{ layout.BarButtonColor }}"></i></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="layoutBackColor" class="col-md-3 control-label">Background Color:</label>
+        <div class="col-md-3">
+            <div class="input-group input-append color" ng-model="layout.BackColor" color-picker data-color="{{ layout.BackColor }}" data-color-format="hex">
+                <input type="text" class="form-control" placeholder="Color" name="layoutBackColor" ng-model="layout.BackColor" />
+                <span class="input-group-addon add-on"><i style="background-color: {{ layout.BackColor; }}"></i></span>
+            </div>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-group">
+        <div class="col-md-offset-3 col-md-6">
+            <button type="submit" class="btn btn-primary" ng-disabled="saving || layoutForm.$invalid"><i class="fa fa-spinner fa-spin" ng-show="saving"></i> Save Layout</button>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div ng-show="saveSuccess" class="alert alert-success" style="text-align: center">
+            <button type="button" class="close" ng-click="saveSuccess = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-ok"></i> Success!</strong> The layout was saved on the server!</span>
+        </div>
+
+        <div ng-show="saveError" class="alert alert-danger" style="text-align: center">
+            <button type="button" class="close" ng-click="saveError = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-times"></i> Error!</strong> There was a error while saving the layout!</span>
+        </div>
+    </div>
+</form>

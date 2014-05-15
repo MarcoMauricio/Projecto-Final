@@ -1,0 +1,52 @@
+﻿<ol class="breadcrumb page-title">
+    <li><a href="/files">Files</a></li>
+    <li class="active">Create Repository</li>
+</ol>
+
+<legend class="collapsable" ng-click="collapseView = !collapseView">
+    <span>Create Repository</span>
+    <i class="fa fa-minus-square-o" ng-show="!collapseView"></i>
+    <i class="fa fa-plus-square-o" ng-show="collapseView"></i>
+</legend>
+
+<form name="createRepositoryForm" class="form-horizontal collapseContent" role="form" novalidate collapse="collapseView">
+
+    <div class="form-group has-feedback">
+        <label for="repositoryName" class="col-md-3 control-label">Name:</label>
+        <div class="col-md-6">
+            <input name="repositoryName" class="form-control" type="text" placeholder="The repository name." ng-model="repository.Name" required />
+            <i class="form-control-feedback"></i>
+        </div>
+    </div>
+
+    <div class="form-group has-feedback">
+        <label for="repositoryType" class="col-md-3 control-label">Type:</label>
+        <div class="col-md-3">
+            <select name="repositoryType" class="form-control" ng-model="repository.Type" required>
+                <option value="1">Local</option>
+                <option value="2" disabled>Dropbox</option>
+            </select>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-group">
+        <div class="col-md-offset-3 col-md-6">
+            <button type="button" class="btn btn-primary" ng-click="createRepository()" ng-disabled="createRepositoryForm.$invalid || saving"><i class="fa fa-spinner fa-spin" ng-show="saving"></i> Create Repository</button>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div ng-show="saveSuccess" class="alert alert-success" style="text-align: center">
+            <button type="button" class="close" ng-click="saveSuccess = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-ok"></i> Success!</strong> The repository was created successfully.</span>
+        </div>
+
+        <div ng-show="saveError" class="alert alert-danger" style="text-align: center">
+            <button type="button" class="close" ng-click="saveError = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-times"></i> Error!</strong> {{ errorMessage || 'There was a error while creating the repository!' }}</span>
+        </div>
+    </div>
+
+</form>

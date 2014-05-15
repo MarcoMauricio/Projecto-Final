@@ -1,0 +1,54 @@
+﻿<div class="modal-header">
+    <button class="close pull-right" ng-click="cancel()">&times;</button>
+    <h1>Permissions</h1>
+</div>
+<div class="modal-body">
+    <form>
+        <table class="table table-striped table-condensed permissions">
+            <thead>
+                <tr>
+                    <th style="width: 16px;"></th>
+                    <th>Entity</th>
+                    <th colspan="4" class="perm-head">Permissions</th>
+                </tr>
+                <tr>
+                    <th colspan="2"></th>
+                    <th class="perm-head">Read</th>
+                    <th class="perm-head">Write</th>
+                    <th class="perm-head">Create</th>
+                    <th class="perm-head">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><i class="fa fa-group"></i></td>
+                    <td>Example Group</td>
+                    <td class="perm-cell"><i class="fa fa-circle"></i></td>
+                    <td class="perm-cell"><i class="fa fa-circle"></i></td>
+                    <td class="perm-cell"><i class="fa fa-circle-blank"></i></td>
+                    <td class="perm-cell"><i class="fa fa-circle-blank"></i></td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-suitcase"></i></td>
+                    <td>Example Role</td>
+                    <td class="perm-cell"><i class="fa fa-circle"></i></td>
+                    <td class="perm-cell"><i class="fa fa-circle-blank"></i></td>
+                    <td class="perm-cell"><i class="fa fa-circle-blank"></i></td>
+                    <td class="perm-cell"><i class="fa fa-circle-blank"></i></td>
+                </tr>
+                <tr>
+                    <td><i class="fa fa-user"></i></td>
+                    <td>Example User</td>
+                    <td class="perm-cell"><i class="fa fa-circle"></i></td>
+                    <td class="perm-cell"><i class="fa fa-circle"></i></td>
+                    <td class="perm-cell"><i class="fa fa-circle"></i></td>
+                    <td class="perm-cell"><i class="fa fa-circle"></i></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<div class="modal-footer">	
+    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
+    <button class="btn btn-primary" ng-click="savePermissions()">Save</button>
+</div>

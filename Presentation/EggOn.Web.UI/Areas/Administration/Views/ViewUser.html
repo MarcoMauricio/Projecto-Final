@@ -1,0 +1,111 @@
+﻿<ol class="breadcrumb page-title">
+    <li><a href="/admin"><i class="fa fa-wrench"></i> Administration</a></li>
+    <li><a href="/admin">Core</a></li>
+    <li><a href="/admin/users">Users</a></li>
+
+    <li ng-hide="user.Id" class="active">Create</li>
+    <li ng-show="user.Id" class="active">{{ userName }}</li>
+</ol>
+
+<legend class="collapsable" ng-click="colapseCreate = !colapseCreate">
+    <span ng-hide="user.Id">Create User</span>
+    <span ng-show="user.Id">View User</span>
+    <i class="fa fa-minus-square-o" ng-show="!colapseCreate"></i>
+    <i class="fa fa-plus-square-o" ng-show="colapseCreate"></i>
+</legend>
+
+<form name="userForm" ng-submit="submitUser(user)" class="form-horizontal collapseContent" role="form" novalidate collapse="collapseCreate">
+    <div class="form-group has-feedback">
+        <label for="userName" class="col-md-3 control-label">Name:</label>
+        <div class="col-md-5">
+            <input name="userName" class="form-control" type="text" placeholder="The name of the user" ng-model="user.Name" required />
+            <i class="form-control-feedback"></i>
+        </div>
+    </div>
+    <div class="form-group has-feedback">
+        <label for="userEmail" class="col-md-3 control-label">Email:</label>
+        <div class="col-md-5">
+            <input name="userEmail" class="form-control" type="email" placeholder="The email of the user." ng-model="user.Email" email-validate required />
+            <i class="form-control-feedback"></i>
+        </div>
+    </div>
+
+    <div class="form-group has-feedback">
+        <label for="userPassword" class="col-md-3 control-label">Password:</label>
+        <div class="col-md-4">
+            <input name="userPassword" class="form-control" type="password" ng-model="user.Password" ng-require="!user.Id" placeholder="The user password." />
+            <i class="form-control-feedback"></i>
+        </div>
+    </div>
+
+    <div class="form-group has-feedback">
+        <label for="userPasswordAgain" class="col-md-3 control-label">Password again:</label>
+        <div class="col-md-4">
+            <input name="userPasswordAgain" class="form-control" type="password" ng-model="passwordAgain" password-match="user.Password" placeholder="Type the password again." ng-require="!user.Id" />
+            <i class="form-control-feedback"></i>
+        </div>
+    </div>
+ 
+    <div class="form-group">
+        <label class="col-md-3 control-label">User Roles:</label>
+        <div class="col-md-9">
+            <table class="table table-bordered table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th>Role Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody ng-hide="rolesOfUser.length == 0">
+                <tr ng-repeat="role in rolesOfUser">
+                    <td>{{ role.Name }}</td>
+                    <td style="text-align: center; width: 10%">
+                        <button ng-click="removeUserRole(role)" class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tbody ng-show="rolesOfUser.length == 0">
+                <tr>
+                    <td colspan="2">
+                        <div class="alert alert-info" style="margin-bottom: 0;">
+                            This user has no roles.
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot ng-hide="(roles | filter:userHasRole).length == 0">
+                <tr>
+                    <td colspan="2" class="form-inline">
+                        <select ng-model="roleToAdd" ng-options="r.Name for r in roles | filter:userHasRole" class="form-control" style="margin-bottom: 0;"></select>
+                        <button type="button" class="btn btn-success" ng-disabled="roleToAdd == null" ng-click="addUserRole(roleToAdd)()">Add Role To User</button>
+                    </td>
+                </tr>
+            </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-group">
+        <div class="col-md-offset-3 col-md-6">
+            <button type="submit" class="btn btn-primary" ng-hide="user.Id" ng-disabled="saving || userForm.$invalid"><i class="fa fa-spinner fa-spin" ng-show="saving"></i> Create User</button>
+            <button type="submit" class="btn btn-primary" ng-show="user.Id" ng-disabled="saving || userForm.$invalid"><i class="fa fa-spinner fa-spin" ng-show="saving"></i> Update User</button>
+            <button type="button" class="btn btn-danger" ng-show="user.Id"  ng-click="deleteUser(user)">Delete User</button>
+
+            <button type="button" class="btn btn-default" ng-click="goBack()">Go Back To List</button>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div ng-show="saveSuccess" class="alert alert-success" style="text-align: center">
+            <button type="button" class="close" ng-click="saveSuccess = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-ok"></i> Success!</strong> The user was saved on the server!</span>
+        </div>
+
+        <div ng-show="saveError" class="alert alert-danger" style="text-align: center">
+            <button type="button" class="close" ng-click="saveError = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-times"></i> Error!</strong> There was a error while saving the user!</span>
+        </div>
+    </div>
+</form>

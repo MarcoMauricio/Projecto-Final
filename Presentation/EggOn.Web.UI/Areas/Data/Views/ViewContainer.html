@@ -1,0 +1,93 @@
+﻿<ul class="breadcrumb page-title">
+  <li><a href="/data">Data</a></li>
+  <li class="active" ng-show="container.Id">{{ container.Name }}</li>
+  <li class="active" ng-hide="container.Id">Create Container</li>
+</ul>
+
+<legend class="collapsable" ng-click="collapseView = !collapseView">
+    <span ng-show="container.Id">View Container</span>
+    <span ng-hide="container.Id">Create Container</span>
+    <i class="fa fa-minus-square-o" ng-show="!collapseView"></i>
+    <i class="fa fa-plus-square-o" ng-show="collapseView"></i>
+</legend>
+
+<form name="containerForm" class="form-horizontal collapseContent" role="form" novalidate collapse="collapseView" ng-submit="submitContainer()">
+    
+    <div class="form-group has-feedback">
+        <label for="containerName" class="col-md-3 control-label">Name:</label>
+        <div class="col-md-6">
+            <input name="containerName" class="form-control" type="text" placeholder="Ex: Todo Tasks" ng-model="container.Name" required />
+            <i class="form-control-feedback"></i>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="containerType" class="col-md-3 control-label">Type:</label>
+        <div class="col-md-3">
+            <select name="containerType" class="form-control" ng-model="container.Type" ng-options="t.Id as t.Name for t in containerTypes" required>
+            </select>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="containerFields" class="col-md-3 control-label">Fields:</label>
+        <div class="col-md-9">
+            <table class="table table-striped table-hover table-condensed" ng-show="container.Fields.length != 0">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Show in Record List</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="field in container.Fields | orderBy:'Order'">
+                        <td>{{ field.Name }}</td>
+                        <td>{{ typeIdToName(field.FieldTypeId) }}</td>
+                        <td>{{ field.ShowInList }}</td>
+                        <td style="text-align: right;">
+                            <button class="btn btn-xs btn-default" type="button" ng-click="editField(field)"><i class="fa fa-edit"></i> Edit Field</button>
+                            <button class="btn btn-xs btn-danger" type="button" ng-click="removeField(field)"><i class="fa fa-times"></i> Remove Field</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        
+            <div ng-show="container.Fields.length == 0" class="alert alert-info" >
+                This containers has no fields. Click <a href="#" ng-click="addField()">here</a> to add one.
+            </div>
+
+            <button type="button" class="btn btn-default" ng-click="addField()">Add Field</button>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="containerPrimary" class="col-md-3 control-label">Primary Field:</label>
+        <div class="col-md-3">
+            <select name="containerPrimary" ng-model="primaryField" ng-disabled="container.Fields.length == 0" ng-options="field.Name for field in container.Fields | filter:isPrimaryType" ng-change="changedPrimaryField(primaryField)" class="form-control" required>
+            </select>
+        </div>
+    </div>
+
+    <hr />
+
+    <div class="form-group">
+        <div class="col-md-offset-3 col-md-6">
+            <button type="submit" class="btn btn-primary" ng-disabled="saving || containerForm.$invalid || container.Fields.length == 0"><i class="fa fa-spinner fa-spin" ng-show="saving"></i> Save Container</button>
+            <button type="button" class="btn btn-default" ng-click="goBack()" ng-show="container.Id">Go Back to Record List</button>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div ng-show="saveSuccess" class="alert alert-success" style="text-align: center">
+            <button type="button" class="close" ng-click="saveSuccess = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-ok"></i> Success!</strong> The container was saved successfully.</span>
+        </div>
+
+        <div ng-show="saveError" class="alert alert-danger" style="text-align: center">
+            <button type="button" class="close" ng-click="saveError = false" aria-hidden="true">&times;</button>
+            <span><strong><i class="fa fa-times"></i> Error!</strong> {{ errorMessage || 'There was a error while saving the container!' }}</span>
+        </div>
+    </div>
+</form>

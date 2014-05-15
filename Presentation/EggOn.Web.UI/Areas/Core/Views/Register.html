@@ -1,0 +1,38 @@
+﻿<div class="container-signin">
+    <form id="RegisterForm" name="RegisterForm" class="form-signin" ng-submit="submitRegisterForm()">
+            
+        <h2 class="form-signin-heading">Register</h2>
+
+        <div class="input-prepend">
+            <span class="add-on"><i class="fa fa-pencil"></i></span>
+            <input type="text" placeholder="Name" ng-model="name" required />
+        </div>
+
+        <div class="input-prepend">
+            <span class="add-on"><i class="fa fa-envelope"></i></span>
+            <input type="text" placeholder="Email" ng-model="email" email-validate required />
+        </div>
+        <div class="input-prepend">
+            <span class="add-on"><i class="fa fa-key"></i></span>
+            <input type="password" placeholder="Password" ng-model="password" required />
+        </div>
+        <div class="input-prepend">
+            <span class="add-on"><i class="fa fa-key"></i></span>
+            <input type="password" placeholder="Password Again" ng-model="passwordAgain" password-match="password" required />
+        </div>
+
+        <div style="position: relative;">
+            <button class="btn btn-large btn-primary" type="submit" ng-disabled="!RegisterForm.$valid"><i class="fa fa-asterisk"></i> Register</button>
+            <a class="btn btn-default" ng-click="cancelRegisterForm()"><i class="fa fa-reply"></i> Go Back</a>
+            <i ng-show="showSpinner" class="fa fa-spinner fa-spin fa-3x pull-right"></i>
+        </div>
+
+        <div ng-show="showValidationMessage" class="alert alert-success" style="margin: 20px 0 0">
+            <strong>User Registered!</strong><br /> Email validation is required. Please check your email inbox and click on the link.
+        </div>
+
+        <div ng-show="showErrorMessage" class="alert alert-danger" style="margin: 20px 0 0">
+            <strong>Error!</strong><br /> User with that email already exists, do you want to <a href="/recover">recover your password</a>?
+        </div>
+    </form>
+</div>

@@ -1,0 +1,23 @@
+﻿<div class="modal-header">
+    <h3>Rename File</h3>
+</div>
+
+<form name="renameForm" class="form-horizontal" role="form" novalidate ng-submit="renameFile()">
+    <div class="modal-body">
+
+        <div class="form-group has-feedback">
+            <label for="fileName" class="col-md-3 control-label">Name:</label>
+            <div class="col-md-6">
+                <input name="fileName" type="text" class="form-control" ng-model="file.Name" required />
+                <i class="form-control-feedback"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" ng-disabled="renameForm.$invalid">Rename</button>
+        <button type="button" class="btn btn-default" ng-click="cancel()">Cancel</button>
+    </div>
+
+</form>

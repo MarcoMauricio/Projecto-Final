@@ -1,0 +1,42 @@
+﻿<div class="container-signin">
+    <form id="RecoverForm" name="RecoverForm" class="form-signin" ng-show="key" ng-submit="submitRecoverForm()">
+        <h2 class="form-signin-heading">Recover Password</h2>
+
+        <div class="input-prepend">
+            <span class="add-on"><i class="fa fa-key"></i></span>
+            <input type="password" placeholder="Password" ng-model="password" required />
+        </div>
+
+        <div class="input-prepend">
+            <span class="add-on"><i class="fa fa-key"></i></span>
+            <input type="password" placeholder="Password Again" ng-model="passwordAgain" password-match="password" required />
+        </div>
+
+        <div style="position: relative;">
+            <button class="btn btn-large btn-primary" type="submit" ng-disabled="!RecoverForm.$valid"><i class="fa fa-asterisk"></i> Recover</button>
+            <a class="btn btn-default" ng-click="cancelRecoverForm()"><i class="fa fa-reply"></i> Go Back</a>
+            <i ng-show="showSpinner" class="fa fa-spinner fa-spin fa-3x pull-right"></i>
+        </div>
+
+        <div ng-show="showMessage" ng-bind-html-unsafe="message" class="alert alert-success" style="margin: 20px 0 0">
+        </div>
+    </form>
+
+    <form id="SendEmailForm" name="SendEmailForm" class="form-signin" ng-show="!key" ng-submit="submitEmailForm()">
+        <h2 class="form-signin-heading">Recover Password</h2>
+
+        <div class="input-prepend">
+            <span class="add-on"><i class="fa fa-envelope"></i></span>
+            <input type="text" placeholder="Email" ng-model="email" email-validate required />
+        </div>
+
+        <div style="position: relative;">
+            <button class="btn btn-large btn-primary" type="submit" ng-disabled="!SendEmailForm.$valid"><i class="fa fa-asterisk"></i> Send Email</button>
+            <a class="btn btn-default" ng-click="cancelRecoverForm()"><i class="fa fa-reply"></i> Cancel</a>
+            <i ng-show="showSpinner" class="fa fa-spinner fa-spin fa-3x pull-right"></i>
+        </div>
+
+        <div ng-show="showMessage" ng-bind-html-unsafe="message" class="alert alert-success" style="margin: 20px 0 0">
+        </div>
+    </form>
+</div>

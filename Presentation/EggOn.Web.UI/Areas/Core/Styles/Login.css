@@ -1,0 +1,111 @@
+﻿.container-signin {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 10000;
+    background-color: #eee;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+
+.form-signin .checkbox {
+    font-weight: normal;
+}
+
+.form-signin .form-control {
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+
+.form-signin input[type="email"] {
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-left: 36px;
+}
+
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    padding-left: 36px;
+}
+
+.form-signin input[type="checkbox"] {
+    margin: 4px 0 0 -20px;
+}
+
+.form-signin .input-wrap {
+    position: relative;
+}
+
+.form-signin .input-wrap i.fa {
+    position: absolute;
+    z-index: 100;
+    top: 13px;
+    left: 9px;
+    font-size: 18px;
+    color: #444;
+}
+
+.form-signin input.ng-dirty.ng-invalid, form select.ng-dirty.ng-invalid {
+    border-color: #e9322d;
+    -webkit-box-shadow: 0 0 6px #f8b9b7;
+    -moz-box-shadow: 0 0 6px #f8b9b7;
+    box-shadow: 0 0 6px #f8b9b7;
+}
+
+/* NotYet */
+/*
+#NotYetForm {
+    max-width: 480px;
+    font-size: 16px;
+}
+
+    #NotYetForm p {
+        margin: 20px;
+    }
+
+    #NotYetForm p.pt {
+        color: #888;
+    }
+
+    #NotYetForm .btn {
+        margin-top: 32px;
+    }
+
+        #NotYetForm .btn img {
+            height: 32px;
+        }
+
+#NotYetForm div.logo {
+    background-color: #1b1b1b;
+    background-image: -moz-linear-gradient(top, #222222, #111111);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#222222), to(#111111));
+    background-image: -webkit-linear-gradient(top, #222222, #111111);
+    background-image: -o-linear-gradient(top, #222222, #111111);
+    background-image: linear-gradient(to bottom, #222222, #111111);
+
+    padding: 10px;
+    margin: 0 -29px 32px -29px;
+}
+*/

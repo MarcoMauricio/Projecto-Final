@@ -1,0 +1,79 @@
+﻿
+<div class="navbar navbar-inverse navbar-fixed-top" ng-style="CustomBar" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="/" class="navbar-brand" style="margin-right: 15px">
+                <img ng-src="{{ getLogoImage() }}" style="max-height: 100%; max-width: 100%;" />
+            </a>
+        </div>
+        <div id="nav-main" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-left">
+                <li ng-class="{active: $state.includes('manager.dashboard')}">
+                    <a href="/" ng-style="useStyleIf($state.includes('manager.dashboard'), CustomButtonBack)"><i class="fa fa-dashboard"></i> <span>Dashboard</span></a>
+                </li>
+
+                <!-- Custom Module Options. -->
+                
+                <li ng-class="{active: $state.includes('manager.data')}">
+                    <a href="/data" ng-style="useStyleIf($state.includes('manager.data'), CustomButtonBack)"><i class="fa fa-table"></i> Data</a>
+                </li>
+
+                <li ng-class="{active: $state.includes('manager.files')}">
+                    <a href="/files" ng-style="useStyleIf($state.includes('manager.files'), CustomButtonBack)"><i class="fa fa-hdd-o"></i> Files</a>
+                </li>
+
+                <li ng-class="{active: $state.includes('manager.admin')}" ng-show="UserHasRole('administrator')">
+                    <a href="/admin" ng-style="useStyleIf($state.includes('manager.admin'), CustomButtonBack)"><i class="fa fa-wrench"></i> <span>Administration</span></a>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="divider-vertical"></li>
+                <li ng-class="{active: $state.includes('manager.profile')}">
+                    <a href="/profile" ng-style="useStyleIf($state.includes('manager.profile'), CustomButtonBack)">
+                        <img ng-src="http://www.gravatar.com/avatar/{{avatarUrl}}.jpg?s=18&d=mm" class="gravatar-thumb" alt="Gravatar" />
+                        <span style="font-weight: bold">{{currentUser.Name}}</span>
+                    </a>
+                </li>
+                <li class="divider-vertical"></li>
+                <li>
+                    <a href="#" ng-click="askLogoutUser()">
+                        <i class="fa fa-sign-out"></i> Sign out
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="container main-container">
+    <section ui-view autoscroll="false"></section>
+</div>
+
+<div id="footer" class="navbar-fixed-bottom">
+    <div class="container-fluid">
+        <p class="pull-left" ng-show="CustomLogoId != null">
+            <a href="/" class="navbar-brand">
+                <img src="/Areas/Core/Assets/logo.png" style="max-height: 100%; max-width: 100%; margin: 0;" />
+            </a>
+        </p>
+        <p class="pull-right logo">
+            <a href="http://www.flowoptions.com/" target="_blank">
+                <img src="/Areas/Core/Assets/foptions.png" alt="Flow Options" />
+            </a>
+        </p>
+        <!--
+        <p class="pull-right">
+            <i class="fa fa-shield" tooltip-placement="left" tooltip="No bug detection available." style="cursor: pointer; color: #808080; margin-left: 10px;" title="No bug detection available."></i>
+
+            <i ng-hide="realtimeConnected" class="fa fa-signal" tooltip-placement="left" tooltip="No real time connection available." style="cursor: pointer; color: #802020; margin-left: 10px;"></i>
+            <i ng-show="realtimeConnected" class="fa fa-signal" tooltip-placement="left" tooltip="Connected real time to the server!" style="cursor: pointer; color: #208020; margin-left: 10px;"></i>
+        </p>
+        -->
+    </div>
+</div>

@@ -1,0 +1,60 @@
+﻿<ol class="breadcrumb page-title">
+    <li><a href="/admin"><i class="fa fa-wrench"></i> Administration</a></li>
+    <li><a href="/admin">Core</a></li>
+    <li class="active">Roles</li>
+</ol>
+
+<legend class="collapsable" ng-click="collapseList = !collapseList">
+    <span>Roles</span>
+    <i class="fa fa-minus-square-o" ng-show="!collapseList"></i>
+    <i class="fa fa-plus-square-o" ng-show="collapseList"></i>
+</legend>
+
+<div class="collapseContent" collapse="collapseList">
+    <table ng-hide="roles.length == 0" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="role in roles">
+                <td ng-click="editRole(role)" style="cursor: pointer">{{ role.Name }}</td>
+                <td style="width: 1%">
+                    <button ng-click="deleteRole(role)" class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div ng-show="showLoadingMessage" class="alert alert-info">
+        <i class="fa fa-spinner fa-spin"></i> Loading roles...
+    </div> 
+
+    <div ng-show="!showLoadingMessage && roles.length == 0" class="alert alert-info" >
+        No roles were found.
+    </div>
+</div>
+
+<legend class="collapsable" ng-click="collapseCreate = !collapseCreate">
+    <span>Create Role</span>
+    <i class="fa fa-minus-square-o" ng-show="!collapseCreate"></i>
+    <i class="fa fa-plus-square-o" ng-show="collapseCreate"></i>
+</legend>
+
+<form name="createRoleForm" class="form-horizontal collapseContent" collapse="collapseCreate" role="form" novalidate ng-submit="createRole()" >
+    <div class="form-group has-feedback">
+        <label for="roleName" class="col-md-3 control-label">Name:</label>
+        <div class="col-md-6">
+            <input name="roleName" class="form-control" type="text" placeholder="Role name." ng-model="newRole.Name" required />
+            <i class="form-control-feedback"></i>
+        </div>
+    </div>
+    <hr />
+    <div class="form-group">
+        <div class="col-md-offset-3 col-md-6">
+            <button type="submit" class="btn btn-primary" ng-disabled="!createRoleForm.$valid">Create Role</button>
+        </div>
+    </div>
+</form>
