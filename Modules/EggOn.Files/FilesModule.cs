@@ -5,7 +5,7 @@ using FlowOptions.EggOn.Files.ViewModels;
 using FlowOptions.EggOn.Logging;
 using FlowOptions.EggOn.ModuleCore;
 
-namespace EggOn.Web.Service.Areas.Files
+namespace FlowOptions.Web.Service.Areas.Files
 {
     public class FilesModule : IEggOnModule
     {

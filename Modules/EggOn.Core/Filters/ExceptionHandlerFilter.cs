@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http.Filters;
 
-namespace EggOn.Web.Service.Filters
+namespace FlowOptions.Web.Service.Filters
 {
     public class ExceptionHandlerFilter : ExceptionFilterAttribute
     {

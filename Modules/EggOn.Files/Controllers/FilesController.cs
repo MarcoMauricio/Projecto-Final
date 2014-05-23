@@ -10,6 +10,7 @@ using System.Net.Http;
 using FlowOptions.EggOn.Files.Models;
 using FlowOptions.EggOn.ModuleCore;
 using System.Web;
+using EggOn.Files.Utils;
 
 namespace FlowOptions.EggOn.Files.Controllers
 {
@@ -75,6 +76,7 @@ namespace FlowOptions.EggOn.Files.Controllers
                     contents = binaryReader.ReadBytes(size);
                 }
 
+                /// Ficheiro uploaded
                 File file = new File()
                 {
                     Id = GuidComb.NewGuid(),
@@ -85,6 +87,14 @@ namespace FlowOptions.EggOn.Files.Controllers
                     UserId = this.CurrentUser.Id,
                     UploadDate = DateTime.Now
                 };
+
+
+                if (file.Name.EndsWith(".pdf"))
+                {
+                    ContextCore context = new ContextCore();
+                    Context item = context.Contextualize(file.Name);
+                    Console.WriteLine(item);
+                }
 
                 if (Query.ContainsKey("repositoryId")) 
                 {

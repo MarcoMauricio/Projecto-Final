@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EggOn.Files.Context
+namespace EggOn.Files.Utils
 {
-    public class LocalContext : IContextualize
+    public class LocalService : IContextService
     {
         public Context GetContext(string Title, string Text)
         {

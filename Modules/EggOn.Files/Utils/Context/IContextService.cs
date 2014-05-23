@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EggOn.Files.Context
+namespace EggOn.Files.Utils
 {
-    public interface IContextualize
+    public interface IContextService
     {
         Context GetContext(String Title, String Text);
     }
