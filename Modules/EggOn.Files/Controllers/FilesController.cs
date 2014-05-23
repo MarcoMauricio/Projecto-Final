@@ -89,14 +89,9 @@ namespace FlowOptions.EggOn.Files.Controllers
                 };
 
 
-                if (file.Name.EndsWith(".pdf"))
-                {
-                    ContextCore context = new ContextCore();
-                    Context item = context.Contextualize(file.Name);
-                    Console.WriteLine(item);
-                }
 
-                if (Query.ContainsKey("repositoryId")) 
+
+                if (Query.ContainsKey("repositoryId"))
                 {
                     var repository = Database.SingleOrDefault<Repository>(Guid.Parse(this.Query["repositoryId"]));
                     if (repository == null)
@@ -113,7 +108,8 @@ namespace FlowOptions.EggOn.Files.Controllers
                     string path = "";
 
                     File parentFile = this.Database.SingleOrDefault<File>(file.ParentFileId);
-                    while(parentFile != null) {
+                    while (parentFile != null)
+                    {
                         if (parentFile.Type != FileTypes.Folder)
                         {
                             throw BadRequest("File is not a folder.");
@@ -127,8 +123,16 @@ namespace FlowOptions.EggOn.Files.Controllers
 
                     string filePath = System.IO.Path.Combine(repositoryPath, path, file.Name);
                     System.IO.File.WriteAllBytes(filePath, contents);
-                } 
-                else 
+
+
+                    if (file.Name.EndsWith(".pdf"))
+                    {
+                        ContextCore context = new ContextCore();
+                        Context item = context.Contextualize(filePath);
+                        Console.WriteLine(item);
+                    }
+                }
+                else
                 {
                     // File contents embedded in the database.
                     file.Contents = contents;
@@ -217,7 +221,7 @@ namespace FlowOptions.EggOn.Files.Controllers
             {
                 this.Database.Delete(file);
             }
-            
+
             return Mapper.Map<FileDto>(file);
         }
 

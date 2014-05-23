@@ -9,7 +9,7 @@ namespace EggOn.Files.Utils
 {
     public class ContextCore
     {
-        private IContextService service = new RemoteService();
+        private IContextService service = new LocalService();
         public Context Contextualize(String FilePath)
         {
             string Text = PDFUtils.GetPDFText(FilePath);

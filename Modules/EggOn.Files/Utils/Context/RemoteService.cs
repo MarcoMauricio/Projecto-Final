@@ -11,12 +11,19 @@ namespace EggOn.Files.Utils
 {
     public class RemoteService : IContextService
     {
-        static String servicelink = "https://aylien-text.p.mashape.com/";
-        public string Text { get; set; }
-        public string Title { get; set; }
+        private String servicelink;
+        private string Text { get; set; }
+        private string Title { get; set; }
+        public RemoteService()
+        {
+            servicelink = "https://aylien-text.p.mashape.com/";
+
+        }
+
         public Context GetContext(String title, String text)
         {
             Title = title;
+            if (text.Length > 200) text = text.Remove(200);
             Text = text;
             return new Context
             {
@@ -111,7 +118,7 @@ namespace EggOn.Files.Utils
                     // Read the content.
                     var responseFromServer = reader.ReadToEnd();
                     dynamic Categories = JsonConvert.DeserializeObject(responseFromServer);
-                    dynamic cat = new {label = "", confidence =0.0};
+                    dynamic cat = new { label = "", confidence = 0.0 };
 
                     // Display the content.
                     foreach (var category in Categories.categories)
@@ -130,7 +137,7 @@ namespace EggOn.Files.Utils
         private string GetSummary()
         {
             // Create a request for the URL. 
-            WebRequest request = WebRequest.Create(servicelink + "summarize?text=" + Text + "&title=" + Title);
+            WebRequest request = WebRequest.Create(servicelink + "summarize?text=" + Text + "&title=Test" + Title);
             // If required by the server, set the credentials.
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Headers.Add("X-Mashape-Authorization", "MNJVFUtDMGjo6bQFZ7wHeMu5DIdTtDnA");
@@ -166,7 +173,7 @@ namespace EggOn.Files.Utils
         private List<string> GetEntities()
         {
             // Create a request for the URL. 
-            WebRequest request = WebRequest.Create(servicelink + "summarize?text=" + Text + "&title=" + Title);
+            WebRequest request = WebRequest.Create(servicelink + "summarize?text=" + Text);
             // If required by the server, set the credentials.
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Headers.Add("X-Mashape-Authorization", "MNJVFUtDMGjo6bQFZ7wHeMu5DIdTtDnA");

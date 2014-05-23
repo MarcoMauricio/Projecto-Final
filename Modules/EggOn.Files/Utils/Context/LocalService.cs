@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NLP;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,48 @@ namespace EggOn.Files.Utils
 {
     public class LocalService : IContextService
     {
-        public Context GetContext(string Title, string Text)
+
+        private string Title { get; set; }
+        private string Text { get; set; }
+  
+        public Context GetContext(string title, string text)
         {
-            throw new NotImplementedException();
+            Title = title;
+            Text = text;
+            return new Context
+            {
+                Summary = GetSummary(),
+                Entities = GetEntities(),
+                Classification = GetClassification(),
+                Sentiment = GetSentiment(),
+                Language = GetLanguage()
+            };
         }
+
+        private string GetLanguage()
+        {
+            return "Not Implemented";
+        }
+
+        private string GetSentiment()
+        {
+            return "Not Implemented";
+        }
+
+        private string GetClassification()
+        {
+            return TextClassifier.Classify(Text);
+        }
+
+        private List<string> GetEntities()
+        {
+            return NamedEntityExtraction.GetEntities(Text);
+        }
+
+        private string GetSummary()
+        {
+            return NamedEntitySummary.GetSummary(Text);
+        }
+
     }
 }
