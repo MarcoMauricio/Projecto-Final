@@ -128,8 +128,8 @@ namespace FlowOptions.EggOn.Files.Controllers
 
                     if (file.Name.EndsWith(".pdf"))
                     {
-                        ContextCore context = new ContextCore();
-                        Context item = context.Contextualize(filePath);
+                        ContextCore context = new ContextCore(new RemoteService(),filePath);
+                        Context item = context.GetContext();
                         string mydocpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                         using (StreamWriter outfile = new StreamWriter(mydocpath + @"\UserInputFile.txt", true))
                         {
