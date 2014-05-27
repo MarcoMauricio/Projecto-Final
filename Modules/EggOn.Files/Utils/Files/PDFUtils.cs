@@ -13,17 +13,18 @@ namespace EggOn.Files.Utils
     {
         public static string GetPDFText(String pdfPath)
         {
-            PdfReader reader = new PdfReader(pdfPath);
+            ITextExtractionStrategy strategy = new LocationTextExtractionStrategy();
+            using (PdfReader reader = new PdfReader(pdfPath))
+            {
+                StringBuilder text = new StringBuilder();
 
-            StringWriter output = new StringWriter();
+                for (int i = 1; i <= reader.NumberOfPages; i++)
+                {
+                    text.Append(PdfTextExtractor.GetTextFromPage(reader, i,strategy));
+                }
 
-            for (int i = 1; i <= reader.NumberOfPages; i++)
-                output.WriteLine(PdfTextExtractor.GetTextFromPage(reader, i, new SimpleTextExtractionStrategy()));
-            string s = output.ToString();
-            s.Replace("\n","");
-            s.Replace(".", "");
-            s.Trim();
-            return s;
+                return text.ToString();
+            }
         }
     }
 }

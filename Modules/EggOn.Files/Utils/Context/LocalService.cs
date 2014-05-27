@@ -16,7 +16,7 @@ namespace EggOn.Files.Utils
         public Context GetContext(string title, string text)
         {
             Title = title;
-            Text = text;
+            Text = text.Replace("\n"," ");
             return new Context
             {
                 Summary = GetSummary(),
@@ -47,7 +47,7 @@ namespace EggOn.Files.Utils
             return NamedEntityExtraction.GetEntities(Text);
         }
 
-        private string GetSummary()
+        private List<string> GetSummary()
         {
             return NamedEntitySummary.GetSummary(Text);
         }

@@ -23,8 +23,8 @@ namespace EggOn.Files.Utils
         public Context GetContext(String title, String text)
         {
             Title = title;
-            if (text.Length > 200) text = text.Remove(200);
-            Text = text;
+            if (text.Length > 5000) text = text.Remove(5000);
+            Text = text.Replace("\n", " ");
             return new Context
             {
                 Summary = GetSummary(),
@@ -118,23 +118,29 @@ namespace EggOn.Files.Utils
                     // Read the content.
                     var responseFromServer = reader.ReadToEnd();
                     dynamic Categories = JsonConvert.DeserializeObject(responseFromServer);
-                    dynamic cat = new { label = "", confidence = 0.0 };
+                    Category cat = new Category();
 
                     // Display the content.
                     foreach (var category in Categories.categories)
                     {
-                        if (category.confidence > cat.confidence) cat.label = category.label;
+                        if (category.confidence > cat.Confidence) cat.Label = category.label;
                     }
-                    return cat.label;
+                    return cat.Label;
                 }
 
             }
             return null;
         }
 
+        private class Category
+        {
+            public string Label {get;set;}
+            public float Confidence{get;set;}
+
+        }
 
 
-        private string GetSummary()
+        private List<string> GetSummary()
         {
             // Create a request for the URL. 
             WebRequest request = WebRequest.Create(servicelink + "summarize?text=" + Text + "&title=Test" + Title);
@@ -158,12 +164,12 @@ namespace EggOn.Files.Utils
                     var responseFromServer = reader.ReadToEnd();
                     dynamic sum = JsonConvert.DeserializeObject(responseFromServer);
                     // Display the content.
-                    var returnedBuilder = new StringBuilder();
-                    foreach (String str in sum.sentences)
+                    List<string> summary = new List<string>();
+                    foreach (var sentence in sum.sentences)
                     {
-                        returnedBuilder.AppendLine(str);
+                        summary.Add(sentence.Value);
                     }
-                    return returnedBuilder.ToString();
+                    return summary;
                 }
 
             }
@@ -172,8 +178,9 @@ namespace EggOn.Files.Utils
 
         private List<string> GetEntities()
         {
+
             // Create a request for the URL. 
-            WebRequest request = WebRequest.Create(servicelink + "summarize?text=" + Text);
+            WebRequest request = WebRequest.Create(servicelink + "entities?text=" + Text);
             // If required by the server, set the credentials.
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Headers.Add("X-Mashape-Authorization", "MNJVFUtDMGjo6bQFZ7wHeMu5DIdTtDnA");
@@ -197,7 +204,8 @@ namespace EggOn.Files.Utils
                     List<string> toReturn = new List<string>();
                     foreach (var entity in Entities.entities)
                     {
-                        toReturn.AddRange(entity);
+                        foreach (var ent in entity.Value)
+                        toReturn.Add(ent.Value);
                     }
                     return toReturn;
                 }

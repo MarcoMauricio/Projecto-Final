@@ -11,7 +11,7 @@ namespace EggOn.Files.Utils
     }
     public class Context
     {
-        public string Summary { get; set; }
+        public List<string> Summary { get; set; }
         public string Classification { get; set; }
         public List<string> Entities { get; set; }
         public string Sentiment { get; set; }

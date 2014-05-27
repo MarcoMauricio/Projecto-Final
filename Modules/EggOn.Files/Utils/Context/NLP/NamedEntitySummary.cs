@@ -11,7 +11,7 @@ namespace NLP
          * The return value is a list of pair <Sentence , Number Of Entity Hits>
          * 
         */
-        public static string GetSummary(string text)
+        public static List<string> GetSummary(string text)
         {
             var entitiesList = NamedEntityExtraction.GetEntities(text);
             var sentences = new Dictionary<string, int>();
@@ -31,7 +31,7 @@ namespace NLP
             {
                 returnList.Add(keyValue.Key);
             }
-            return returnList.ToString() ;
+            return returnList;
         }
     }
 }

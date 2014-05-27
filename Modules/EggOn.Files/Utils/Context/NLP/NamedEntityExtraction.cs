@@ -17,12 +17,12 @@ namespace NLP
             /*E*/   "each", "either" ,"everybody", "everyone", "everything","eagerly","early","earnestly","easily","efficiently","effortlessly","elaborately","eloquently","elegantly","elsewhere","emotionally","endlessly","energetically","enjoyably","enormously","enough","enthusiastically","entirely","equally","especially","essentially","eternally","ethically","even","evenly","eventually","evermore","every","everywhere","evidently","evocatively","exactly","exceedingly","exceptionally","excitedly","exclusively","explicitly","expressly","extensively","externally","extra","extraordinarily","extremely",
             /*F*/   "fairly","faithfully","famously","far","fashionably","fast","fatally","favorably","ferociously","fervently","fiercely","fiery","finally","financially","finitely","fluently","fondly","foolishly","forever","formally","formerly","fortunately","forward","frankly","frantically","freely","frequently","frenetically","fully","furiously","furthermore",
             /*G*/   "generally","generously","genuinely","gently","genuinely","girlishly","gladly","gleefully","gracefully","graciously","gradually","gratefully","greatly","greedily","grimly","grudgingly",
-            /*H*/   "he", "her", "hers", "herself" ,"him", "himself", "his","habitually","half-heartedly","handily","handsomely","haphazardly","happily","hastily","harmoniously","harshly","hastily","hatefully","hauntingly","healthily","heartily","heavily","helpfully","hence","highly","hitherto","honestly","hopelessly","horizontally","hourly","how","however","hugely","humorously","hungrily","hurriedly","hysterically",
+            /*H*/   "he", "her", "hers", "herself","his" ,"him", "himself", "his","habitually","half-heartedly","handily","handsomely","haphazardly","happily","hastily","harmoniously","harshly","hastily","hatefully","hauntingly","healthily","heartily","heavily","helpfully","hence","highly","hitherto","honestly","hopelessly","horizontally","hourly","how","however","hugely","humorously","hungrily","hurriedly","hysterically",
             /*I*/   "i", "it", "its" ,"itself","instead","if", "in","icily","identifiably","idiotically","imaginatively","immeasurably","immediately","immensely","impatiently","impressively","inappropriately","incessantly","incorrectly","indeed","independently","indoors","indubitably","inevitably","infinitely","informally","infrequently","innocently","inquisitively","instantly","intelligently","intensely","intently","interestingly","intermittently","internally","invariably","invisibly","inwardly","ironically","irrefutably","irritably",
             /*J*/   "jaggedly","jauntily","jealously","jovially","joyfully","joylessly","joyously","jubilantly","judgmentally","just","justly",
             /*K*/   "keenly","kiddingly","kindheartedly","kindly","knavishly","knottily","knowingly","knowledgeably","kookily",
             /*L*/   "lastly","late","lately","later","lazily","less","lightly","likely","limply","lithely","lively","loftily","longingly","loosely","loudly","lovingly","loyally","luckily","luxuriously",
-            /*M*/   "many", "me", "mine", "more", "most" ,"much" ,"myself","madly","magically","mainly","majestically","markedly","materially","meaningfully","meanly","meantime","meanwhile","measurably","mechanically","medically","menacingly","merely","merrily","methodically","mightily","miserably","mockingly","monthly","morally","more","moreover","mortally","mostly","much","mysteriously",
+            /*M*/   "my","many", "me", "mine", "more", "most" ,"much" ,"myself","madly","magically","mainly","majestically","markedly","materially","meaningfully","meanly","meantime","meanwhile","measurably","mechanically","medically","menacingly","merely","merrily","methodically","mightily","miserably","mockingly","monthly","morally","more","moreover","mortally","mostly","much","mysteriously",
             /*N*/   "neither" ,"no", "nobody", "none", "nothing","no","now","nastily","naturally","naughtily","nearby","nearly","neatly","needily","negatively","nervously","never","nevertheless","next","nicely","nightly","noisily","normally","nosily","not","now","nowadays","numbly",
             /*O*/   "one" ,"other" ,"others" ,"ours", "ourselves","obediently","obligingly","obnoxiously","obviously","occasionally","oddly","offensively","officially","often","ominously","once","only","openly","optimistically","orderly","ordinarily","outdoors","outrageously","outwardly","outwards","overconfidently","overseas",
             /*P*/   "painfully","painlessly","paradoxically","partially","particularly","passionately","patiently","perfectly","periodically","perpetually","persistently","personally","persuasively","physically","plainly","playfully","poetically","poignantly","politely","poorly","positively","possibly","potentially","powerfully","presently","presumably","prettily","previously","primly","principally","probably","promptly","properly","proudly","punctually","puzzlingly",
@@ -32,7 +32,7 @@ namespace NLP
             /*T*/   "that", "their", "theirs" ,"them", "themselves", "these", "they", "this", "those","the","temporarily","tenderly","tensely","tepidly","terribly","thankfully","then","there","thereby","thoroughly","thoughtfully","thus","tightly","today","together","tomorrow","too","totally","touchingly","tremendously","truly","truthfully","twice",
             /*U*/   "us","ultimately","unabashedly","unanimously","unbearably","unbelievably","unemotionally","unethically","unexpectedly","unfailingly","unfavorably","unfortunately","uniformly","unilaterally","unimpressively","universally","unnaturally","unnecessarily","unquestionably","unwillingly","up","upbeat","unkindly","upliftingly","upright","unselfishly","upside-down","unskillfully","upward","upwardly","urgently","usefully","uselessly","usually","utterly",
             /*V*/   "vacantly","vaguely","vainly","valiantly","vastly","verbally","vertically","very","viciously","victoriously","vigilantly","vigorously","violently","visibly","visually","vivaciously","voluntarily",
-            /*W*/   "we", "what", "whatever", "which", "whichever" ,"who", "whoever", "whom" ,"whomever" ,"whose","warmly","weakly","wearily","weekly","well","wetly","when","where","while","whole-heartedly","wholly","why","wickedly","widely","wiggly","wildly","willfully","willingly","wisely","woefully","wonderfully","worriedly","worthily","wrongly",
+            /*W*/   "with","we", "what", "whatever", "which", "whichever" ,"who", "whoever", "whom" ,"whomever" ,"whose","warmly","weakly","wearily","weekly","well","wetly","when","where","while","whole-heartedly","wholly","why","wickedly","widely","wiggly","wildly","willfully","willingly","wisely","woefully","wonderfully","worriedly","worthily","wrongly",
             /*Y*/   "you", "your", "yours" ,"yourself" ,"yourselves","yearly","yearningly","yesterday","yet","youthfully",
             /*Z*/   "zanily","zealously","zestfully","zestily"};
 
@@ -57,13 +57,13 @@ namespace NLP
             /*R*/   "realmente",
             /*U*/   "unicamente","ultimamente",
             /*V*/   "vocês","vós","vosso","vossa","vossos","vossas"   };
-       
+
         /*
          * method that allows the retrieval of well-formed entities of a given text
          * the return value is a list of pair <entityname>
          * 
          */
-        public static List<string> GetEntities(string text) 
+        public static List<string> GetEntities(string text)
         {
             var entities = new Dictionary<string, int>();
             var temp = text;
