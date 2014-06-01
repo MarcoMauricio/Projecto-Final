@@ -131,6 +131,9 @@
     <Content Include="Areas\Administration\Scripts\Controllers\LayoutController.js" />
     <Content Include="Areas\Administration\Styles\Administration.css" />
     <Content Include="Areas\Administration\Views\Layout.html" />
+    <Content Include="Areas\Context\Scripts\config.js" />
+    <Content Include="Areas\Context\Scripts\Controllers\ListDocumentsController.js" />
+    <Content Include="Areas\Context\Scripts\Resources\Documents.js" />
     <Content Include="Areas\Core\Assets\holder.png" />
     <Content Include="Areas\Administration\Scripts\Controllers\ViewUserController.js" />
     <Content Include="Areas\Administration\Scripts\Controllers\CreateUserController.js" />
@@ -382,6 +385,7 @@
       <Name>EggOn.ModuleCore</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

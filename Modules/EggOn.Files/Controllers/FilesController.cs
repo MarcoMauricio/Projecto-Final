@@ -10,8 +10,8 @@ using System.Net.Http;
 using FlowOptions.EggOn.Files.Models;
 using FlowOptions.EggOn.ModuleCore;
 using System.Web;
-using EggOn.Files.Utils;
 using System.IO;
+using EggOn.Files.Utils;
 
 namespace FlowOptions.EggOn.Files.Controllers
 {

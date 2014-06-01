@@ -1,4 +1,4 @@
-﻿namespace NLP
+﻿namespace Context.NLP.Algorithms
 {
     public class TextClassifier
     {
