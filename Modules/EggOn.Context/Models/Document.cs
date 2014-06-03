@@ -1,7 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
-using EggOn.Context.Models;
 
 namespace Context.Models
 {
@@ -13,6 +12,12 @@ namespace Context.Models
     /// </summary>
     public class Document
     {
+        public Document()
+        {
+            Entities = new List<Entity>();
+            Summary = new Summary();
+            Category = new Category();
+        }
         [BsonId]
         public ObjectId Id { get; set; }
         public string TableName { get; set; }

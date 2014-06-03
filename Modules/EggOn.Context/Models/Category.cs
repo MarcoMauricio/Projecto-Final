@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EggOn.Context.Models
+namespace Context.Models
 {
     public class Category
     {
