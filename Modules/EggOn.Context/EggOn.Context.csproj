@@ -67,9 +67,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ContextController.cs" />
-    <Compile Include="DataAccessLayer\DocumentService.cs" />
+    <Compile Include="DataAccessLayer\Services\CategoryService.cs" />
+    <Compile Include="DataAccessLayer\Services\DocumentService.cs" />
     <Compile Include="DataAccessLayer\MongoHelper.cs" />
     <Compile Include="ContextModule.cs" />
+    <Compile Include="DataAccessLayer\Services\EntitiesService.cs" />
+    <Compile Include="DataAccessLayer\Services\SummaryService.cs" />
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Entity.cs" />
