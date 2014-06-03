@@ -1,5 +1,4 @@
 ﻿using Context.Models;
-using EggOn.Context.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
@@ -7,7 +6,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace Context.DataAccessLayer
+namespace Context.DataAccessLayer.Services
 {
     /// <summary>
     /// Serviço para o acesso a documentos na base de dados
