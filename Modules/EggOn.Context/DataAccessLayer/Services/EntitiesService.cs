@@ -1,6 +1,7 @@
 ﻿using Context.Models;
 using MongoDB.Bson;
 using MongoDB.Driver.Builders;
+using System.Collections.Generic;
 namespace Context.DataAccessLayer.Services
 {
     class EntitiesService
@@ -16,6 +17,11 @@ namespace Context.DataAccessLayer.Services
         {
             _documents.Collection.Update(Query.EQ("_id", documentId),
                 Update.PushWrapped("Entities", entity));
+        }
+
+        public List<Entity> GetEntities(ObjectId documentId)
+        {
+            return _documents.Collection.FindOne(Query.EQ("_id", documentId)).Entities;
         }
     }
 }

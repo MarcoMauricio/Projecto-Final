@@ -19,5 +19,9 @@ namespace Context.DataAccessLayer.Services
             _documents.Collection.Update(Query.EQ("_id", documentId),
                 Update.PushWrapped("Summary", summary));
         }
+        public Summary GetSummary(ObjectId documentId)
+        {
+            return _documents.Collection.FindOne(Query.EQ("_id", documentId)).Summary;
+        }
     }
 }

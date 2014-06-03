@@ -23,5 +23,9 @@ namespace Context.DataAccessLayer.Services
             _documents.Collection.Update(Query.EQ("_id", documentId),
                 Update.PushWrapped("Category", category));
         }
+        public Category GetCategory(ObjectId documentId)
+        {
+            return _documents.Collection.FindOne(Query.EQ("_id", documentId)).Category;
+        }
     }
 }
