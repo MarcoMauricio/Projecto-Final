@@ -1,14 +1,21 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Context.NLP.Algorithms{
+namespace Context.NLP.Algorithms
+{
     class NamedEntitySummary
     {
-        /*
-         * Method that allows the retrieval of summary with well-formed entities of a given text
-         * The return value is a list of pair <Sentence , Number Of Entity Hits>
-         * 
-        */
+        /// <summary>
+        /// Algoritmo que retorna as frases com o maior número de entidades
+        /// </summary>
+        /// 
+        /// <param name="text">
+        /// Texto a ser analisado
+        /// </param>
+        /// 
+        /// <returns>
+        /// Lista de frases ordenada de forma descendente pelo número de entidades presentes
+        /// </returns>
         public static List<string> GetSummary(string text)
         {
             var entitiesList = NamedEntityExtraction.GetEntities(text);
