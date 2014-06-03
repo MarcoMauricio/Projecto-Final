@@ -35,12 +35,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EggOn.Data", "Modules\EggOn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EggOn.Files", "Modules\EggOn.Files\EggOn.Files.csproj", "{30FA139F-81B2-45D1-ACAB-BC30BFF6BF4C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7629C0AE-F85E-4DFE-B286-8BE30F03079C}"
-	ProjectSection(SolutionItems) = preProject
-		WebEssentials-Settings.json = WebEssentials-Settings.json
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EggOn.Context", "Modules\EggOn.Context\EggOn.Context.csproj", "{F26ABC12-74B3-48B4-AFAA-83DF30D01127}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3BC8E773-461F-4C95-AEC1-A4710BEF1D3B} = {3BC8E773-461F-4C95-AEC1-A4710BEF1D3B}
+		{25C2F78E-96D8-4140-A033-60E3554AAB9A} = {25C2F78E-96D8-4140-A033-60E3554AAB9A}
+		{44D18C98-BEEE-4F7E-A7FA-F482BCBD3027} = {44D18C98-BEEE-4F7E-A7FA-F482BCBD3027}
+		{BB43C3D8-53E4-43FD-9414-B9E31C6AEDF5} = {BB43C3D8-53E4-43FD-9414-B9E31C6AEDF5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
