@@ -11,6 +11,18 @@ namespace Dummy
 {
     public class PDFUtils
     {
+
+
+        /// <summary>
+        /// Utilização do pacote iText para a leitura de texto a partir de documentos PDF.
+        ///  Foi escolhida a estratégia "LocationTextExtractionStrategy" porque tem em consideração a posição do texto 
+        ///  no documento. 
+        /// </summary>
+        /// 
+        /// <param name="pdfPath">String com o caminho absoluto do ficheiro para fazer a leitura</param>
+        /// 
+        /// <returns>Texto extraido do ficheiro PDF</returns>
+
         public static string GetPDFText(String pdfPath)
         {
             ITextExtractionStrategy strategy = new LocationTextExtractionStrategy();
@@ -20,7 +32,7 @@ namespace Dummy
 
                 for (int i = 1; i <= reader.NumberOfPages; i++)
                 {
-                    text.Append(PdfTextExtractor.GetTextFromPage(reader, i,strategy));
+                    text.Append(PdfTextExtractor.GetTextFromPage(reader, i, strategy));
                 }
 
                 return text.ToString();

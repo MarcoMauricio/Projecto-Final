@@ -1,11 +1,22 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 namespace Context.NLP.Services
 {
+    /// <summary>
+    /// Classe que representa a implementação concreta da classe \c AbstractService. 
+    /// 
+    /// Caracteriza-se pela a utilização do serviço externo diponibilizado pela empresa Aylien.
+    /// 
+    /// Este serviço recebe na QueryString um parametro do tipo "&text=..." e retorna um objecto 
+    /// JSON representativo do recurso identificado no pedido. Esta classe apenas faz a leitura das 
+    /// respostas aos pedidos efectuados a esse serviço, e toda a documentação pode ser vista no url : 
+    /// http://aylien.com/text-api-doc
+    /// </summary>
+
+
     public class RemoteService : AbstractService
     {
         private String servicelink;
@@ -111,12 +122,17 @@ namespace Context.NLP.Services
             return null;
         }
 
+        /// <summary>
+        /// Classe de uso interno devido ao serviço utilizado retornar uma lista desorganizada de 
+        /// categorias que são identificadas com o seu nome/confiança  do texto se encontrar nessa categoria.
+        /// </summary>
         private class Category
         {
-            public string Label {get;set;}
-            public float Confidence{get;set;}
+            public string Label { get; set; }
+            public float Confidence { get; set; }
 
         }
+
         protected override List<string> GetSummary()
         {
             // Create a request for the URL. 
@@ -182,7 +198,7 @@ namespace Context.NLP.Services
                     foreach (var entity in Entities.entities)
                     {
                         foreach (var ent in entity.Value)
-                        toReturn.Add(ent.Value);
+                            toReturn.Add(ent.Value);
                     }
                     return toReturn;
                 }

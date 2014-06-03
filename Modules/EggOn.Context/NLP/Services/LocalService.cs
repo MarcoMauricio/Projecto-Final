@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 namespace Context.NLP.Services
 {
+
+    /// <summary>
+    /// Serviço que utiliza implementações locais para a criação de contexto do texto a ser considerado.
+    /// Os algoritmos utilizados estão presentes através de classes estáticas, promovendo dessa maneira a 
+    /// rápida alteração do algoritmo a ser utilizado.
+    /// </summary>
     public class LocalService : AbstractService
     {
 
