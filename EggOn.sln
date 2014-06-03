@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EggOn.Context", "Modules\Eg
 		{BB43C3D8-53E4-43FD-9414-B9E31C6AEDF5} = {BB43C3D8-53E4-43FD-9414-B9E31C6AEDF5}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EggOn.ContextTests", "EggOn.ContextTests\EggOn.ContextTests.csproj", "{1C83000A-5099-4806-977C-AB330811F37F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -85,6 +87,10 @@ Global
 		{F26ABC12-74B3-48B4-AFAA-83DF30D01127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F26ABC12-74B3-48B4-AFAA-83DF30D01127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F26ABC12-74B3-48B4-AFAA-83DF30D01127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C83000A-5099-4806-977C-AB330811F37F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C83000A-5099-4806-977C-AB330811F37F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C83000A-5099-4806-977C-AB330811F37F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C83000A-5099-4806-977C-AB330811F37F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
