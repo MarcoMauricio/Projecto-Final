@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 namespace Context.NLP.Services
 {
+
     public interface IContextService
     {
         MinedObject GetContext(String Title, String Text);
     }
+
     public class MinedObject
     {
         public List<string> Summary { get; set; }
