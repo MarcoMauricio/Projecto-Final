@@ -134,6 +134,8 @@
     <Content Include="Areas\Context\Scripts\config.js" />
     <Content Include="Areas\Context\Scripts\Controllers\ListDocumentsController.js" />
     <Content Include="Areas\Context\Scripts\Resources\Documents.js" />
+    <Content Include="Areas\Context\Views\Dashboard.html" />
+    <Content Include="Areas\Context\Views\Index.html" />
     <Content Include="Areas\Core\Assets\holder.png" />
     <Content Include="Areas\Administration\Scripts\Controllers\ViewUserController.js" />
     <Content Include="Areas\Administration\Scripts\Controllers\CreateUserController.js" />

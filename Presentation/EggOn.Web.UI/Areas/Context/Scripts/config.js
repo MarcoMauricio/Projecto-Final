@@ -5,9 +5,13 @@
 
             .state('manager.context', {
                 url: '/context',
-                abstract: true,
+                abstract: false,
                 templateUrl: '/Areas/Context/Views/Index.html',
                 controller: 'ListDocumentsController'
+            }).
+            state('manager.context.dashboard', {
+                url: '',
+                templateUrl: '/Areas/Context/Views/Dashboard.html'
             })
 
     }]);

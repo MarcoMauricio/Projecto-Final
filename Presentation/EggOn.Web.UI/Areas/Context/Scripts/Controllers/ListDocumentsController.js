@@ -2,13 +2,11 @@
 
     .controller('ListDocumentsController', ['$scope', '$state', '$stateParams', '$modal', 'Documents',
     function ($scope, $state, $stateParams, $modal, Documents) {
-        console.log('data details controller');
+        console.log('documents controller');
 
         $scope.loading = true;
 
-        $scope.documents = Document.Query()
+        $scope.documents = Documents.get();
+        console.log($scope.documents);
 
-        
-
-        });
     }]);

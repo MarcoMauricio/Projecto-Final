@@ -8,6 +8,7 @@ angular.module('EggOn.Core', [
     // Place custom modules namespaces here.
     , 'EggOn.Files'
     , 'EggOn.Data'
+    , 'EggOn.Context'
 ])
 
     .config(['$modalProvider', function ($modalProvider) {

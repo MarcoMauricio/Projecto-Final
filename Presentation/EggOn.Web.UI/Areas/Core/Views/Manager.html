@@ -19,7 +19,7 @@
                 </li>
 
                 <!-- Custom Module Options. -->
-                
+
                 <li ng-class="{active: $state.includes('manager.data')}">
                     <a href="/data" ng-style="useStyleIf($state.includes('manager.data'), CustomButtonBack)"><i class="fa fa-table"></i> Data</a>
                 </li>
@@ -28,9 +28,14 @@
                     <a href="/files" ng-style="useStyleIf($state.includes('manager.files'), CustomButtonBack)"><i class="fa fa-hdd-o"></i> Files</a>
                 </li>
 
+                <li ng-class="{active: $state.includes('manager.context')}">
+                    <a href="/context" ng-style="useStyleIf($state.includes('manager.context'), CustomButtonBack)"><i class="fa fa-book"></i>Context</a>
+                </li>
+
                 <li ng-class="{active: $state.includes('manager.admin')}" ng-show="UserHasRole('administrator')">
                     <a href="/admin" ng-style="useStyleIf($state.includes('manager.admin'), CustomButtonBack)"><i class="fa fa-wrench"></i> <span>Administration</span></a>
                 </li>
+               
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="divider-vertical"></li>
