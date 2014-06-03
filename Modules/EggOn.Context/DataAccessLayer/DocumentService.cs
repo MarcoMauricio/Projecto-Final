@@ -1,44 +1,41 @@
 ﻿using Context.Models;
+using EggOn.Context.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using System;
 using System.Collections.Generic;
+
+
 namespace Context.DataAccessLayer
 {
+    /// <summary>
+    /// Serviço para o acesso a documentos na base de dados
+    /// </summary>
+  
     public class DocumentService
     {
         private readonly MongoHelper<Document> _documents;
-
         public DocumentService()
         {
             _documents = new MongoHelper<Document>();
         }
-
-        public void Create(Document document)
+        public MongoCursor<Document> GetDocuments()
         {
-            _documents.Collection.Save(document);
+            return _documents.Collection.FindAll();
         }
 
-        public void Edit(Document document)
+        public void CreateDocument(Document document)
         {
-            throw new NotSupportedException();
+            document.Summary = new Summary();
+            document.Entities = new List<Entity>();
+            document.Category = new Category();
+            _documents.Collection.Insert(document);
         }
 
         public void Delete(ObjectId documentId)
         {
             _documents.Collection.Remove(Query.EQ("_id", documentId));
         }
-
-        public MongoCursor<Document> GetDocuments()
-        {
-            return _documents.Collection.FindAll();
-        }
-
-        public Document GetDocument(string id)
-        {
-            return _documents.Collection.FindOne(Query.EQ("_id", id));
-        }
     }
 }
-
