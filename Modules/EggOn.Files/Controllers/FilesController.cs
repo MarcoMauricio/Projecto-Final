@@ -11,7 +11,6 @@ using FlowOptions.EggOn.Files.Models;
 using FlowOptions.EggOn.ModuleCore;
 using System.Web;
 using System.IO;
-using EggOn.Files.Utils;
 
 namespace FlowOptions.EggOn.Files.Controllers
 {
@@ -128,27 +127,7 @@ namespace FlowOptions.EggOn.Files.Controllers
 
                     if (file.Name.EndsWith(".pdf"))
                     {
-                        ContextCore context = new ContextCore(new RemoteService(),filePath);
-                        Context item = context.GetContext();
-                        string mydocpath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                        using (StreamWriter outfile = new StreamWriter(mydocpath + @"\UserInputFile.txt", true))
-                        {
-                            outfile.Write("Entities : ");
-                            foreach (var entity in item.Entities)
-                            {
-                                outfile.Write(entity + " , ");
-                            }
-                            outfile.WriteLine();
-                            outfile.WriteLine("Classification : " + item.Classification);
-                            outfile.WriteLine("Language : " + item.Language);
-                            outfile.WriteLine("Sentiment :" + item.Sentiment);
-                            outfile.Write("Summary : ");
-                            foreach (var sentence in item.Summary)
-                            {
-                                outfile.WriteLine("Line : "+sentence);
-                            }
-                            outfile.WriteLine();
-                        }
+                        /// TO IMPLEMENT
 
                     }
                 }

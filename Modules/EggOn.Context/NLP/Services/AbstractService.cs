@@ -16,7 +16,7 @@ namespace Context.NLP.Services
             {
                 Summary = GetSummary(),
                 Entities = GetEntities(),
-                Classification = GetClassification(),
+                Category = GetClassification(),
                 Sentiment = GetSentiment(),
                 Language = GetLanguage()
             };
