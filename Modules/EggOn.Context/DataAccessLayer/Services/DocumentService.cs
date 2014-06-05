@@ -2,7 +2,6 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
-using System;
 using System.Collections.Generic;
 
 
@@ -11,7 +10,7 @@ namespace Context.DataAccessLayer.Services
     /// <summary>
     /// Serviço para o acesso a documentos na base de dados
     /// </summary>
-  
+
     public class DocumentService
     {
         private readonly MongoHelper<Document> _documents;
@@ -35,6 +34,11 @@ namespace Context.DataAccessLayer.Services
         public void Delete(ObjectId documentId)
         {
             _documents.Collection.Remove(Query.EQ("_id", documentId));
+        }
+
+        public Document GetDocument(ObjectId documentId)
+        {
+            return _documents.Collection.FindOne(Query.EQ("_id", documentId));
         }
     }
 }
