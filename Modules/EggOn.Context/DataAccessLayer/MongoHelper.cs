@@ -15,10 +15,11 @@ namespace Context.DataAccessLayer
 
         public MongoHelper()
         {
-            var con = new MongoConnectionStringBuilder("EggOn");
-            var server = MongoServer.Create(con);
-            var db = server.GetDatabase(con.DatabaseName);
-            Collection = db.GetCollection<T>(typeof(T).Name.ToLower());
+            var connectionString = "mongodb://localhost";
+            var client = new MongoClient(connectionString);
+            var server = client.GetServer();
+            var database = server.GetDatabase("EggOn");
+            Collection = database.GetCollection<T>(typeof(T).Name.ToLower());
         }
     }
 }
