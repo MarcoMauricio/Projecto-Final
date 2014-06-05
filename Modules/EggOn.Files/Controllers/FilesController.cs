@@ -11,6 +11,7 @@ using FlowOptions.EggOn.Files.Models;
 using FlowOptions.EggOn.ModuleCore;
 using System.Web;
 using System.IO;
+using System.Net.Http.Headers;
 
 namespace FlowOptions.EggOn.Files.Controllers
 {
@@ -128,19 +129,37 @@ namespace FlowOptions.EggOn.Files.Controllers
                     if (file.Name.EndsWith(".pdf"))
                     {
                         /// TO IMPLEMENT
+                        using (var client = new HttpClient())
+                        {
+                            client.BaseAddress = new Uri("http://localhost:8075/");
+                            client.DefaultRequestHeaders.Accept.Clear();
+                            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+                            var gizmo = new aux() { filePath = filePath, tableName = "FilesFiles", tableIndex = file.Id.ToString() };
+                            var response = client.PostAsJsonAsync("context", gizmo);
+                            while (!response.IsCompleted) ;
+                            Console.WriteLine(response.Result);
+                        }
                     }
-                }
-                else
-                {
-                    // File contents embedded in the database.
-                    file.Contents = contents;
-                }
+                    else
+                    {
+                        // File contents embedded in the database.
+                        file.Contents = contents;
+                    }
 
+
+                }
                 this.Database.Insert(file);
 
                 return Mapper.Map<FileDto>(file);
             }
+        }
+
+        class aux
+        {
+            public string filePath { get; set; }
+            public string tableName { get; set; }
+            public string tableIndex { get; set; }
         }
 
         [Route("files"), HttpGet]
