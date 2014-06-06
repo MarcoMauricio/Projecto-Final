@@ -21,7 +21,7 @@ namespace Context.DataAccessLayer.Services
         }
         public Summary GetSummary(ObjectId documentId)
         {
-            return _documents.Collection.FindOne(Query.EQ("_id", documentId)).Summary;
+            return null;//_documents.Collection.FindOne(Query.EQ("_id", documentId)).Summary;
         }
     }
 }

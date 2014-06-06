@@ -12,6 +12,7 @@ using FlowOptions.EggOn.ModuleCore;
 using System.Web;
 using System.IO;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace FlowOptions.EggOn.Files.Controllers
 {
@@ -134,6 +135,14 @@ namespace FlowOptions.EggOn.Files.Controllers
                             client.BaseAddress = new Uri("http://localhost:8075/");
                             client.DefaultRequestHeaders.Accept.Clear();
                             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                           
+                            String u="admin@flowoptions.com:"; String p="fo";
+
+
+                            var plainTextBytes = Encoding.UTF8.GetBytes(u+p);
+                            String encoded=System.Convert.ToBase64String(plainTextBytes);
+                            client.DefaultRequestHeaders.Authorization= new AuthenticationHeaderValue("Basic", encoded);
+
 
                             var gizmo = new aux() { filePath = filePath, tableName = "FilesFiles", tableIndex = file.Id.ToString() };
                             var response = client.PostAsJsonAsync("context", gizmo);

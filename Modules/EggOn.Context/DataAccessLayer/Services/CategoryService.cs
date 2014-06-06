@@ -20,7 +20,7 @@ namespace Context.DataAccessLayer.Services
         }
         public Category GetCategory(ObjectId documentId)
         {
-            return _documents.Collection.FindOne(Query.EQ("_id", documentId)).Category;
+            return null;// _documents.Collection.FindOne(Query.EQ("_id", documentId)).Category;
         }
     }
 }

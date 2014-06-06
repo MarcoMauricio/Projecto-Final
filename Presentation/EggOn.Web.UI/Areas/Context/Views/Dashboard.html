@@ -2,12 +2,26 @@
     <li><a href="/context">Context</a></li>
     <li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
 </ul>
-<div class="row">
-    <div class="col-md-12">
-        <ol>
-            <li ng-repeat="document in documents">
-                <div class="col-md-3">{{document}}</div>
-            </li>
-        </ol>
-    </div>
-</div>
+<table class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>ID</th>
+            <th>Table Name</th>
+            <th>Index</th>
+            <th>Summary</th>
+            <th>Entities</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="document in documents">
+            <td>{{document.Category}}</td>
+            <td>{{document.Id}}</td>
+            <td>{{document.TableName}}</td>
+            <td>{{document.TableIndex}}</td>
+            <td>{{document.Summary}}</td>
+
+        </tr>
+    </tbody>
+</table>
+

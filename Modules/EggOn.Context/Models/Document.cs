@@ -15,15 +15,15 @@ namespace Context.Models
         public Document()
         {
             Entities = new List<Entity>();
-            Summary = new Summary();
-            Category = new Category();
+            //Summary = new Summary();
+           // Category = new Category();
         }
         [BsonId]
         public ObjectId Id { get; set; }
         public string TableName { get; set; }
         public string TableIndex { get; set; }
         public List<Entity> Entities { get; set; }
-        public Summary Summary { get; set; }
-        public Category Category { get; set; }
+        public string Summary { get; set; }
+        public string Category { get; set; }
     }
 }

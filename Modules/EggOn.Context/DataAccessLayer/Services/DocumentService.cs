@@ -25,10 +25,9 @@ namespace Context.DataAccessLayer.Services
 
         public void CreateDocument(Document document)
         {
-            document.Summary = new Summary();
             document.Entities = new List<Entity>();
-            document.Category = new Category();
-            _documents.Collection.Insert(document);
+
+            _documents.Collection.Save(document);
         }
 
         public void Delete(ObjectId documentId)

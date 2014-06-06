@@ -6,7 +6,9 @@
 
         $scope.loading = true;
 
-        $scope.documents = Documents.get();
-        console.log($scope.documents);
+        $scope.documents = [];
+        $scope.documents = Documents.query();
+        for (var i = 0; i < $scope.documents.length;i++)
+        console.log($scope.documents[i]);
 
     }]);
