@@ -41,7 +41,7 @@ namespace FlowOptions.EggOn.Context.Controllers
         [Route("context"), HttpPost]
         public HttpResponseMessage CreateContext(aux cenas)
         {
-            ContextCore context = new ContextCore(new RemoteService(), cenas.filePath);
+            ContextCore context = new ContextCore(new LocalService(), cenas.filePath);
             MinedObject item = context.GetContext();
             // Document
             Document doc = new Document();
