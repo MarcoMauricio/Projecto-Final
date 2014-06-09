@@ -86,7 +86,7 @@ namespace Context.NLP.Services
             return null;
         }
 
-        protected override string GetClassification()
+        protected override string GetCategory()
         {
             WebRequest request = WebRequest.Create(servicelink + "classify?text=" + Text);
             // If required by the server, set the credentials.

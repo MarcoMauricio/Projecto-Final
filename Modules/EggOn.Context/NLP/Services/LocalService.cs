@@ -21,7 +21,7 @@ namespace Context.NLP.Services
             return "Not Implemented";
         }
 
-        protected override string GetClassification()
+        protected override string GetCategory()
         {
             return TextClassifier.Classify(Text);
         }

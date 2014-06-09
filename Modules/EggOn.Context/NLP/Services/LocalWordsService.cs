@@ -41,7 +41,7 @@ namespace Context.NLP.Services
             throw new NotImplementedException();
         }
 
-        protected override string GetClassification()
+        protected override string GetCategory()
         {
             throw new NotImplementedException();
         }

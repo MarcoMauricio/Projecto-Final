@@ -16,7 +16,7 @@ namespace Context.NLP.Services
             {
                 Summary = GetSummary(),
                 Entities = GetEntities(),
-                Category = GetClassification(),
+                Category = GetCategory(),
                 Sentiment = GetSentiment(),
                 Language = GetLanguage()
             };
@@ -26,7 +26,7 @@ namespace Context.NLP.Services
 
         protected abstract string GetSentiment();
 
-        protected abstract string GetClassification();
+        protected abstract string GetCategory();
 
         protected abstract List<string> GetEntities();
 
