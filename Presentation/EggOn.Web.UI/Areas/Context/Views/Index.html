@@ -18,12 +18,12 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="document in $scope.documents">
-                        <td>{{document.Category.CategoryName}}</td>
+                    <tr ng-repeat="document in documents">
+                        <td>{{document.Category}}</td>
                         <td>{{document.Id}}</td>
                         <td>{{document.TableName}}</td>
                         <td>{{document.TableIndex}}</td>
-                        <td>{{document.Summary.SummaryText}}</td>
+                        <td>{{document.Summary}}</td>
                         <td>{{document.Entities}}</td>
                     </tr>
                 </tbody>
