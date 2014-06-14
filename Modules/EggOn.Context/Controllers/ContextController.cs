@@ -1,7 +1,8 @@
-﻿using Context;
-using Context.DataAccessLayer.Services;
-using Context.Models;
-using Context.NLP.Services;
+﻿using System.Linq;
+using EggOn.Context.DataAccessLayer.Services;
+using EggOn.Context.Models;
+using EggOn.Context.NLP;
+using EggOn.Context.NLP.Services;
 using FlowOptions.EggOn.Base.Controllers;
 using MongoDB.Bson;
 using System.Collections.Generic;
@@ -13,75 +14,55 @@ namespace FlowOptions.EggOn.Context.Controllers
 {
     public class ContextController : EggOnApiController
     {
-        private DocumentService documentsHelper;
-        private CategoryService categoryHelper;
-        private EntitiesService entitiesHelper;
-        private SummaryService summaryHelper;
+        private readonly DocumentService _documentsHelper;
+        private readonly EntitiesService _entitiesHelper;
+
         public ContextController()
         {
-            documentsHelper = new DocumentService();
-            categoryHelper = new CategoryService();
-            entitiesHelper = new EntitiesService();
-            summaryHelper = new SummaryService();
+            _documentsHelper = new DocumentService();
+
+            _entitiesHelper = new EntitiesService();
 
         }
         [Route("context"), HttpGet]
         public List<Document> GetAllDocuments()
         {
-            List<Document> list = new List<Document>();
-            var cursor = documentsHelper.GetDocuments();
-            foreach (Document doc in cursor)
-            {
-                list.Add(doc);
-            }
-            return list;
+            var cursor = _documentsHelper.GetDocuments();
+            return cursor.ToList();
         }
 
 
         [Route("context"), HttpPost]
-        public HttpResponseMessage CreateContext(aux cenas)
+        public HttpResponseMessage CreateContext(Aux cenas)
         {
-            ContextCore context = new ContextCore(new LocalService(), cenas.filePath);
-            MinedObject item = context.GetContext();
+            var context = new ContextCore(new LocalService(), cenas.FilePath);
+            var item = context.GetContext();
             // Document
-            Document doc = new Document();
-            doc.Id = ObjectId.GenerateNewId();
-            doc.TableIndex = cenas.tableIndex;
-            doc.TableName = cenas.tableName;
-            doc.Summary = item.Summary.ToArray().ToString();
-            doc.Category =  item.Category;
-
-            documentsHelper.CreateDocument(doc);
-            //Category
-            /*
-            Category cat = new Category();
-            cat.Id = ObjectId.GenerateNewId();
-            cat.CategoryName = item.Category;
-            categoryHelper.AddCategory(doc.Id, cat);*/
-            //Entities
-            foreach (var entity in item.Entities)
+            var doc = new Document
             {
-                Entity ent = new Entity();
-                ent.Id = ObjectId.GenerateNewId();
-                ent.entityName = entity;
-                entitiesHelper.AddEntity(doc.Id, ent);
+                Id = ObjectId.GenerateNewId(),
+                TableIndex = cenas.TableIndex,
+                TableName = cenas.TableName,
+                Summary = item.Summary,
+                Category = item.Category
+            };
+
+            _documentsHelper.CreateDocument(doc);
+
+            foreach (var ent in item.Entities.Select(entity => new Entity {Id = ObjectId.GenerateNewId(), EntityName = entity}))
+            {
+                _entitiesHelper.AddEntity(doc.Id, ent);
             }
-            /*
-            Summary sum = new Summary();
-            sum.Id = ObjectId.GenerateNewId();
-            sum.SummaryText = item.Summary.ToArray().ToString();
-            summaryHelper.AddSummary(doc.Id, sum);*/
 
-
-            var response = Request.CreateResponse<aux>(HttpStatusCode.Created, cenas);
+            var response = Request.CreateResponse(HttpStatusCode.Created, cenas);
             return response;
         }
     }
-    public class aux
+    public class Aux
     {
-        public string filePath { get; set; }
-        public string tableName { get; set; }
-        public string tableIndex { get; set; }
+        public string FilePath { get; set; }
+        public string TableName { get; set; }
+        public string TableIndex { get; set; }
 
     }
 }

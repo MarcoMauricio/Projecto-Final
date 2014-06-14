@@ -1,11 +1,11 @@
-﻿using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser;
-using System;
+﻿using System;
 using System.Text;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
 
-namespace Dummy
+namespace EggOn.Context.Utils
 {
-    public class PDFUtils
+    public class PdfUtils
     {
 
 
@@ -19,14 +19,14 @@ namespace Dummy
         /// 
         /// <returns>Texto extraido do ficheiro PDF</returns>
 
-        public static string GetPDFText(String pdfPath)
+        public static string GetPdfText(String pdfPath)
         {
             ITextExtractionStrategy strategy = new LocationTextExtractionStrategy();
-            using (PdfReader reader = new PdfReader(pdfPath))
+            using (var reader = new PdfReader(pdfPath))
             {
-                StringBuilder text = new StringBuilder();
+                var text = new StringBuilder();
 
-                for (int i = 1; i <= reader.NumberOfPages; i++)
+                for (var i = 1; i <= reader.NumberOfPages; i++)
                 {
                     text.Append(PdfTextExtractor.GetTextFromPage(reader, i, strategy));
                 }

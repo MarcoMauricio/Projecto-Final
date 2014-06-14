@@ -4,9 +4,7 @@
         <li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
     </ul>
     <div class="row">
-        <div class="col-md-12">
-
-            <table class="table table-striped table-hover ">
+              <table class="table table-striped table-hover ">
                 <thead>
                     <tr>
                         <th>Category</th>
@@ -19,15 +17,14 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="document in documents">
-                        <td>{{document.Category}}</td>
-                        <td>{{document.Id}}</td>
-                        <td>{{document.TableName}}</td>
-                        <td>{{document.TableIndex}}</td>
-                        <td>{{document.Summary}}</td>
-                        <td>{{document.Entities}}</td>
+                        <td class="col-md-1">{{document.Category}}</td>
+                        <td class="col-md-1">{{document.Id}}</td>
+                        <td class="col-md-1">{{document.TableName}}</td>
+                        <td class="col-md-1">{{document.TableIndex}}</td>
+                        <td class="col-md-4">{{document.Summary}}</td>
+                        <td class="col-md-4">{{document.Entities}}</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-</div>

@@ -1,6 +1,7 @@
-﻿using Context.NLP.Algorithms;
-using System.Collections.Generic;
-namespace Context.NLP.Services
+﻿using System.Collections.Generic;
+using Context.NLP.Algorithms;
+
+namespace EggOn.Context.NLP.Services
 {
 
     /// <summary>
@@ -31,7 +32,7 @@ namespace Context.NLP.Services
             return NamedEntityExtraction.GetEntities(Text);
         }
 
-        protected override List<string> GetSummary()
+        protected override string GetSummary()
         {
             return NamedEntitySummary.GetSummary(Text);
         }

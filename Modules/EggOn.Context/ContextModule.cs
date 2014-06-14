@@ -13,7 +13,7 @@ namespace FlowOptions.EggOn.Context
             SetupDatabase();
         }
 
-        private void SetupDatabase()
+        internal void SetupDatabase()
         {
            // Nothing to do here
         }

@@ -10,7 +10,7 @@ namespace Context.NLP.Services
 
     public class MinedObject
     {
-        public List<string> Summary { get; set; }
+        public string Summary { get; set; }
         public string Category { get; set; }
         public List<string> Entities { get; set; }
         public string Sentiment { get; set; }

@@ -67,16 +67,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\ContextController.cs" />
-    <Compile Include="DataAccessLayer\Services\CategoryService.cs" />
     <Compile Include="DataAccessLayer\Services\DocumentService.cs" />
     <Compile Include="DataAccessLayer\MongoHelper.cs" />
     <Compile Include="ContextModule.cs" />
     <Compile Include="DataAccessLayer\Services\EntitiesService.cs" />
-    <Compile Include="DataAccessLayer\Services\SummaryService.cs" />
-    <Compile Include="Models\Category.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\Entity.cs" />
-    <Compile Include="Models\Summary.cs" />
     <Compile Include="NLP\Algorithms\NamedEntityExtraction.cs" />
     <Compile Include="NLP\Algorithms\NamedEntitySummary.cs" />
     <Compile Include="NLP\Algorithms\TextClassifier.cs" />
@@ -86,6 +82,7 @@
     <Compile Include="NLP\Services\LocalService.cs" />
     <Compile Include="NLP\Services\LocalWordsService.cs" />
     <Compile Include="NLP\Services\RemoteService.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\PDFUtils.cs" />
   </ItemGroup>

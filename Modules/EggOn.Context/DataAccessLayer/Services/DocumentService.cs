@@ -1,11 +1,10 @@
-﻿using Context.Models;
+﻿using System.Collections.Generic;
+using EggOn.Context.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
-using System.Collections.Generic;
 
-
-namespace Context.DataAccessLayer.Services
+namespace EggOn.Context.DataAccessLayer.Services
 {
     /// <summary>
     /// Serviço para o acesso a documentos na base de dados

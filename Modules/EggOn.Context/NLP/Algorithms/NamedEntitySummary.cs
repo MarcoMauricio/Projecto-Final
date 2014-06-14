@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Context.NLP.Algorithms
 {
@@ -16,7 +17,7 @@ namespace Context.NLP.Algorithms
         /// <returns>
         /// Lista de frases ordenada de forma descendente pelo número de entidades presentes
         /// </returns>
-        public static List<string> GetSummary(string text)
+        public static string GetSummary(string text)
         {
             var entitiesList = NamedEntityExtraction.GetEntities(text);
             var sentences = new Dictionary<string, int>();
@@ -31,12 +32,13 @@ namespace Context.NLP.Algorithms
                 sentences.TryGetValue(s, out currentCount);
                 sentences[s] = currentCount + 1;
             }
-            List<string> returnList = new List<string>();
+
+            StringBuilder summary = new StringBuilder();
             foreach (var keyValue in sentences.OrderByDescending(key => key.Value))
             {
-                returnList.Add(keyValue.Key);
+                summary.AppendLine(keyValue.Key);
             }
-            return returnList;
+            return summary.ToString();
         }
     }
 }

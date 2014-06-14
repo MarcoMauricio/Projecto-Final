@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
-namespace Context.NLP.Services
+using Context.NLP.Services;
+
+namespace EggOn.Context.NLP.Services
 {
     public abstract class AbstractService : IContextService
     {
@@ -30,6 +32,6 @@ namespace Context.NLP.Services
 
         protected abstract List<string> GetEntities();
 
-        protected abstract List<string> GetSummary();
+        protected abstract string GetSummary();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using MongoDB.Driver;
-namespace Context.DataAccessLayer
+
+namespace EggOn.Context.DataAccessLayer
 {
     /// <summary>
     /// Classe auxiliar que serve para a criação de uma ligação com a base de dados. 
@@ -15,7 +16,7 @@ namespace Context.DataAccessLayer
 
         public MongoHelper()
         {
-            var connectionString = "mongodb://localhost";
+            const string connectionString = "mongodb://localhost";
             var client = new MongoClient(connectionString);
             var server = client.GetServer();
             var database = server.GetDatabase("EggOn");

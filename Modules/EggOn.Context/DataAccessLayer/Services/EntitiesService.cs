@@ -1,8 +1,9 @@
-﻿using Context.Models;
+﻿using System.Collections.Generic;
+using EggOn.Context.Models;
 using MongoDB.Bson;
 using MongoDB.Driver.Builders;
-using System.Collections.Generic;
-namespace Context.DataAccessLayer.Services
+
+namespace EggOn.Context.DataAccessLayer.Services
 {
     class EntitiesService
     {
