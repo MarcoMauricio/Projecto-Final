@@ -30,7 +30,7 @@ namespace FlowOptions.EggOn.Files.Controllers
                     throw BadRequest("Request must be multipart.");
                 }
 
-                var repository = this.Database.SingleOrDefault<Repository>(data.RepositoryId);
+                var repository = Database.SingleOrDefault<Repository>(data.RepositoryId);
                 if (repository == null)
                 {
                     throw NotFound("Repository not found.");
@@ -43,7 +43,7 @@ namespace FlowOptions.EggOn.Files.Controllers
                 file.UploadDate = DateTime.Now;
                 file.ContentType = null;
                 file.Contents = new byte[0];
-                file.UserId = this.CurrentUser.Id;
+                file.UserId = CurrentUser.Id;
                 file.RepositoryId = data.RepositoryId;
                 file.ParentFileId = data.ParentFileId;
 
@@ -86,7 +86,7 @@ namespace FlowOptions.EggOn.Files.Controllers
                     Size = size,
                     Type = FileTypes.File,
                     ContentType = uploadedFile.ContentType,
-                    UserId = this.CurrentUser.Id,
+                    UserId = CurrentUser.Id,
                     UploadDate = DateTime.Now
                 };
 
@@ -95,21 +95,21 @@ namespace FlowOptions.EggOn.Files.Controllers
 
                 if (Query.ContainsKey("repositoryId"))
                 {
-                    var repository = Database.SingleOrDefault<Repository>(Guid.Parse(this.Query["repositoryId"]));
+                    var repository = Database.SingleOrDefault<Repository>(Guid.Parse(Query["repositoryId"]));
                     if (repository == null)
                     {
                         throw NotFound("Repository not found.");
                     }
 
                     // File contents in the file system.
-                    file.RepositoryId = Guid.Parse(this.Query["repositoryId"]);
-                    file.ParentFileId = (this.Query.ContainsKey("parentFileId")) ? (Guid?)Guid.Parse(this.Query["parentFileId"]) : null;
+                    file.RepositoryId = Guid.Parse(Query["repositoryId"]);
+                    file.ParentFileId = (Query.ContainsKey("parentFileId")) ? (Guid?)Guid.Parse(Query["parentFileId"]) : null;
                     file.Contents = new byte[0];
 
                     string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
                     string path = "";
 
-                    FlowOptions.EggOn.Files.Models.File parentFile = this.Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(file.ParentFileId);
+                    FlowOptions.EggOn.Files.Models.File parentFile = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(file.ParentFileId);
                     while (parentFile != null)
                     {
                         if (parentFile.Type != FileTypes.Folder)
@@ -118,7 +118,7 @@ namespace FlowOptions.EggOn.Files.Controllers
                         }
 
                         path = System.IO.Path.Combine("/" + parentFile.Name, path);
-                        parentFile = this.Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(parentFile.ParentFileId);
+                        parentFile = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(parentFile.ParentFileId);
                     }
 
                     System.IO.Directory.CreateDirectory(System.IO.Path.Combine(repositoryPath, path));
@@ -136,7 +136,7 @@ namespace FlowOptions.EggOn.Files.Controllers
                             client.DefaultRequestHeaders.Accept.Clear();
                             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                            
-                            String u="admin@flowoptions.com:"; String p="fo";
+                            String u="a@a:"; String p="a";
 
 
                             var plainTextBytes = Encoding.UTF8.GetBytes(u+p);
@@ -158,7 +158,7 @@ namespace FlowOptions.EggOn.Files.Controllers
 
 
                 }
-                this.Database.Insert(file);
+                Database.Insert(file);
 
                 return Mapper.Map<FileDto>(file);
             }
@@ -174,7 +174,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("files"), HttpGet]
         public List<FileDto> GetFiles(Guid parentFileId)
         {
-            var files = this.Database.Fetch<FlowOptions.EggOn.Files.Models.File>("WHERE ParentFileId = @0", parentFileId);
+            var files = Database.Fetch<FlowOptions.EggOn.Files.Models.File>("WHERE ParentFileId = @0", parentFileId);
 
             return Mapper.Map<List<FileDto>>(files);
         }
@@ -182,7 +182,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("files/{fileId:guid}")]
         public FileDto GetFile(Guid fileId)
         {
-            FlowOptions.EggOn.Files.Models.File file = this.Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
+            FlowOptions.EggOn.Files.Models.File file = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
 
             if (file == null)
             {
@@ -195,7 +195,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("files/{fileId:guid}"), HttpPut]
         public FileDto UpdateFile(Guid fileId, FileDto data)
         {
-            FlowOptions.EggOn.Files.Models.File file = this.Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
+            FlowOptions.EggOn.Files.Models.File file = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
 
             if (file == null)
             {
@@ -205,7 +205,7 @@ namespace FlowOptions.EggOn.Files.Controllers
             file.Name = data.Name;
             file.ParentFileId = data.ParentFileId;
 
-            this.Database.Update(file);
+            Database.Update(file);
 
             return Mapper.Map<FileDto>(file);
         }
@@ -213,7 +213,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("files/{fileId:guid}"), HttpDelete]
         public FileDto DeleteFile(Guid fileId)
         {
-            FlowOptions.EggOn.Files.Models.File file = this.Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
+            FlowOptions.EggOn.Files.Models.File file = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
 
             if (file == null)
             {
@@ -222,7 +222,7 @@ namespace FlowOptions.EggOn.Files.Controllers
 
             if (file.RepositoryId != null)
             {
-                var repository = this.Database.SingleOrDefault<Repository>(file.RepositoryId);
+                var repository = Database.SingleOrDefault<Repository>(file.RepositoryId);
                 if (repository == null)
                 {
                     throw NotFound("Repository not found.");
@@ -230,7 +230,7 @@ namespace FlowOptions.EggOn.Files.Controllers
 
                 // TODO: Cascade delete.
 
-                this.Database.Delete(file);
+                Database.Delete(file);
 
                 string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
                 var filePath = System.IO.Path.Combine(repositoryPath, GenerateFilePath(file));
@@ -246,7 +246,7 @@ namespace FlowOptions.EggOn.Files.Controllers
             }
             else
             {
-                this.Database.Delete(file);
+                Database.Delete(file);
             }
 
             return Mapper.Map<FileDto>(file);
@@ -255,7 +255,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("download/{fileId:guid}"), HttpGet, AllowAnonymous]
         public HttpResponseMessage DownloadFile(Guid fileId, string filepath = "")
         {
-            FlowOptions.EggOn.Files.Models.File file = this.Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
+            FlowOptions.EggOn.Files.Models.File file = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
 
             if (file == null)
             {
@@ -266,7 +266,7 @@ namespace FlowOptions.EggOn.Files.Controllers
 
             if (file.RepositoryId != null)
             {
-                var repository = this.Database.SingleOrDefault<Repository>(file.RepositoryId);
+                var repository = Database.SingleOrDefault<Repository>(file.RepositoryId);
                 if (repository == null)
                 {
                     throw NotFound("Repository not found.");
@@ -299,11 +299,11 @@ namespace FlowOptions.EggOn.Files.Controllers
         {
             string path = file.Name;
 
-            FlowOptions.EggOn.Files.Models.File parentFile = this.Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(file.ParentFileId);
+            FlowOptions.EggOn.Files.Models.File parentFile = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(file.ParentFileId);
             while (parentFile != null)
             {
                 path = System.IO.Path.Combine("/" + parentFile.Name, path);
-                parentFile = this.Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(parentFile.ParentFileId);
+                parentFile = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(parentFile.ParentFileId);
             }
 
             return path;

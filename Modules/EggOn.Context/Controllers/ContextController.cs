@@ -35,7 +35,7 @@ namespace FlowOptions.EggOn.Context.Controllers
         [Route("context"), HttpPost]
         public HttpResponseMessage CreateContext(Aux cenas)
         {
-            var context = new ContextCore(new LocalService(), cenas.FilePath);
+            var context = new ContextCore(new RemoteService(), cenas.FilePath);
             var item = context.GetContext();
             // Document
             var doc = new Document

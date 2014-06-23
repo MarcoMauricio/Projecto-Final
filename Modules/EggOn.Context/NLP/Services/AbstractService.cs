@@ -11,7 +11,6 @@ namespace EggOn.Context.NLP.Services
         public MinedObject GetContext(string title, string text)
         {
             Title = title;
-            if (text.Length > 5000) text = text.Remove(5000);
             Text = text.Replace("\n", " ");
 
             return new MinedObject
