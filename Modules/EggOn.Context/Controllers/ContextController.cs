@@ -16,6 +16,7 @@ namespace FlowOptions.EggOn.Context.Controllers
     {
         private readonly DocumentService _documentsHelper;
         private readonly EntitiesService _entitiesHelper;
+        private static List<string> SupportedTypes = new List<string> { "txt", "pdf" };
 
         public ContextController()
         {
@@ -35,6 +36,7 @@ namespace FlowOptions.EggOn.Context.Controllers
         [Route("context"), HttpPost]
         public HttpResponseMessage CreateContext(Message message)
         {
+            if (!checkSupport(message.FilePath)) return Request.CreateResponse(HttpStatusCode.NotAcceptable, message);
             var item = ContextCore.GetContext(message.FilePath);
             // Document
             var doc = new Document
@@ -55,24 +57,31 @@ namespace FlowOptions.EggOn.Context.Controllers
                 _entitiesHelper.AddEntity(doc.Id, ent);
             }
 
-            var response = Request.CreateResponse(HttpStatusCode.Created, message);
-            return response;
+            return Request.CreateResponse(HttpStatusCode.Created, message); 
         }
 
-        [Route("context/{documentId}"), HttpDelete]
-        public void DeleteDocument(string documentId)
-        {
-            var id = new ObjectId(documentId);
-            var file = _documentsHelper.GetDocument(id);
 
-            if (file == null)
+        [Route("context"), HttpDelete]
+        public void DeleteDocumentByFileName(string fileName)
+        {
+            var document = _documentsHelper.GetDocumentByFileName(fileName);
+            if (document == null)
             {
                 throw NotFound("Document not found.");
             }
-            _documentsHelper.Delete(id);
+            _documentsHelper.Delete(document.Id);
         }
 
 
+
+        private bool checkSupport(string path)
+        {
+            foreach (var item in SupportedTypes)
+            {
+                if (path.EndsWith(item)) return true;
+            }
+            return false;
+        }
     }
     public class Message
     {

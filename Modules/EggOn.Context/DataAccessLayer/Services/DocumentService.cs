@@ -38,5 +38,10 @@ namespace EggOn.Context.DataAccessLayer.Services
         {
             return _documents.Collection.FindOne(Query.EQ("_id", documentId));
         }
+
+        internal Document GetDocumentByFileName(string fileName)
+        {
+            return _documents.Collection.FindOne(Query.EQ("FileName", fileName));
+        }
     }
 }
