@@ -14,7 +14,7 @@ namespace FlowOptions.EggOn.Service
     {
         public static void Register(HttpConfiguration config, List<Assembly> moduleAssemblies)
         {
-            List<Assembly> assemblies = new List<Assembly>();
+            var assemblies = new List<Assembly>();
 
             var profileTypes = moduleAssemblies.SelectMany(s => s.GetTypes())
                                 .Where(p => typeof(Profile).IsAssignableFrom(p))

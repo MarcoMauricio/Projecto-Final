@@ -15,7 +15,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("config/layout"), HttpGet]
         public LayoutDto GetLayout()
         {
-            var layout = this.Database.FirstOrDefault<Layout>("");
+            var layout = Database.FirstOrDefault<Layout>("");
 
             if (layout == null)
             {
@@ -35,7 +35,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("config/layout"), HttpPost]
         public LayoutDto UpdateLayout(LayoutDto data)
         {
-            if (!this.CurrentUser.HasRole("Administrator"))
+            if (!CurrentUser.HasRole("Administrator"))
             {
                 throw Forbidden("You need to be an administrator to see this resource.");
             }
@@ -46,19 +46,19 @@ namespace FlowOptions.EggOn.Base.Controllers
             }
 
             Layout layout;
-            Layout oldLayout = this.Database.FirstOrDefault<Layout>("");
+            var oldLayout = Database.FirstOrDefault<Layout>("");
 
             if (oldLayout == null)
             {
                 layout = Mapper.Map<Layout>(data);
                 layout.Id = GuidComb.NewGuid();
-                this.Database.Insert(layout);
+                Database.Insert(layout);
             }
             else
             {
                 layout = Mapper.Map<Layout>(data);
                 layout.Id = oldLayout.Id;
-                this.Database.Update(layout);
+                Database.Update(layout);
             }
 
             return Mapper.Map<LayoutDto>(layout);

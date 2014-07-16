@@ -12,11 +12,11 @@ namespace FlowOptions.EggOn.DataHost
 
         public EggOnDatabase() : base("EggOnConnection")
         {
-            this.EnableAutoSelect = true;
-            this.EnableNamedParams = false;
+            EnableAutoSelect = true;
+            EnableNamedParams = false;
 
 #if DEBUG
-            EggOnDatabase.ALLOW_DATA_LOSS_ON_UPDATE = true;
+            ALLOW_DATA_LOSS_ON_UPDATE = true;
 #else
             EggOnDatabase.ALLOW_DATA_LOSS_ON_UPDATE = false;
 #endif
@@ -30,11 +30,11 @@ namespace FlowOptions.EggOn.DataHost
                 throw new Exception("To automatically create a table,  Model requires a TableName attribute.");
             }
 
-            string tableName = tnAttribute.Value;
+            var tableName = tnAttribute.Value;
             
             var pkAttribute = t.GetCustomAttributes(typeof(PrimaryKeyAttribute), true).FirstOrDefault() as PrimaryKeyAttribute;
 
-            List<SqlColumn> columns = new List<SqlColumn>();
+            var columns = new List<SqlColumn>();
 
             foreach (var prop in t.GetProperties())
             {
@@ -44,7 +44,7 @@ namespace FlowOptions.EggOn.DataHost
                     continue;
                 }
 
-                string columnName = prop.Name;
+                var columnName = prop.Name;
 
                 var columnAttribute = prop.GetCustomAttributes(typeof(ColumnAttribute), true).FirstOrDefault() as ColumnAttribute;
                 if (columnAttribute != null && columnAttribute.Name != null)
@@ -52,7 +52,7 @@ namespace FlowOptions.EggOn.DataHost
                     columnName = columnAttribute.Name;
                 }
 
-                SqlColumn column = new SqlColumn();
+                var column = new SqlColumn();
                 column.Name = columnName;
                 column.Type = GetSqlTypeFromType(prop.PropertyType);
 
@@ -96,40 +96,40 @@ namespace FlowOptions.EggOn.DataHost
                 throw new Exception("Model doesn't have public properties.");
             }
 
-            return this.CreateOrUpdateTable(tableName, columns);
+            return CreateOrUpdateTable(tableName, columns);
         }
        
         // TODO: Update table.
         public bool CreateOrUpdateTable(string tableName, IEnumerable<SqlColumn> columns)
         {
-            using (var tr = this.GetTransaction())
+            using (var tr = GetTransaction())
             {
-                string schemaName = GetSchemaFromTableName(tableName);
+                var schemaName = GetSchemaFromTableName(tableName);
 
                 // TODO: Update table schema.
-                if (this.TableExists(tableName))
+                if (TableExists(tableName))
                 {
                     return false;
                 }
 
-                if (!this.SchemaExists(schemaName))
+                if (!SchemaExists(schemaName))
                 {
-                    this.Execute(@"Create SCHEMA " + schemaName);
+                    Execute(@"Create SCHEMA " + schemaName);
                 }
 
-                LinkedList<SqlColumn> contraints = new LinkedList<SqlColumn>();
-                LinkedList<SqlColumn> uniques = new LinkedList<SqlColumn>();
+                var contraints = new LinkedList<SqlColumn>();
+                var uniques = new LinkedList<SqlColumn>();
                 
                 // TODO: Multi column keys.
                 SqlColumn primaryKey = null;
 
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
 
                 sb.AppendLine("CREATE TABLE " + CleanTableName(tableName) + " (");
 
-                int index = 0;
+                var index = 0;
 
-                foreach(SqlColumn column in columns)
+                foreach(var column in columns)
                 {
                     if (index++ > 0)
                         sb.AppendLine(", ");
@@ -185,9 +185,9 @@ namespace FlowOptions.EggOn.DataHost
                 */
                 sb.AppendLine(");");
 
-                this.Execute(sb.ToString());
+                Execute(sb.ToString());
 
-                foreach (SqlColumn column in contraints)
+                foreach (var column in contraints)
                 {
                     sb.Clear();
 
@@ -196,7 +196,7 @@ namespace FlowOptions.EggOn.DataHost
                     sb.AppendLine("FOREIGN KEY (" + CleanColumnName(column.Name) + ")");
                     sb.AppendLine("REFERENCES " + CleanTableName(column.Constraint.TableName) + " (" + CleanColumnName(column.Constraint.ColumnName) + ")");
 
-                    this.Execute(sb.ToString());
+                    Execute(sb.ToString());
                 }
 
                 tr.Complete();
@@ -208,12 +208,12 @@ namespace FlowOptions.EggOn.DataHost
 
         public void DropTable(string tableName)
         {
-            this.Execute("DROP TABLE " + tableName + ";");
+            Execute("DROP TABLE " + tableName + ";");
         }
 
         public bool TableExists(string tableName)
         {
-            string schemaName = "dbo";
+            var schemaName = "dbo";
 
             if (tableName.IndexOf('.') != -1) {
                 var result = tableName.Split(new char[] { '.' }, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -224,19 +224,19 @@ namespace FlowOptions.EggOn.DataHost
             schemaName = schemaName.Trim(' ', '[', ']');
             tableName = tableName.Trim(' ', '[', ']');
 
-            return this.ExecuteScalar<int>("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = @0 AND TABLE_NAME = @1", schemaName, tableName) != 0;
+            return ExecuteScalar<int>("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = @0 AND TABLE_NAME = @1", schemaName, tableName) != 0;
         }
 
         public bool SchemaExists(string schemaName)
         {
             schemaName = schemaName.Trim(' ', '[', ']');
 
-            return this.ExecuteScalar<int>("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = @0", schemaName) != 0;
+            return ExecuteScalar<int>("SELECT COUNT(*) FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = @0", schemaName) != 0;
         }
 
         public string GetSchemaFromTableName(string tableName)
         {
-            string schemaName = "dbo";
+            var schemaName = "dbo";
 
             if (tableName.IndexOf('.') != -1)
             {
@@ -300,7 +300,7 @@ namespace FlowOptions.EggOn.DataHost
 
         internal string GenerateContraintName(string tableName, SqlColumn column)
         {
-            string foreignTableName = column.Constraint.TableName.Trim(' ', '[', ']').Replace(' ', '_');
+            var foreignTableName = column.Constraint.TableName.Trim(' ', '[', ']').Replace(' ', '_');
             if (foreignTableName.IndexOf('.') != -1)
             {
                 var result = foreignTableName.Split(new char[] { '.' }, 2, StringSplitOptions.RemoveEmptyEntries);
@@ -314,7 +314,7 @@ namespace FlowOptions.EggOn.DataHost
                 tableName = string.Format("{0}.{1}", result[0].Trim(' ', '[', ']'), result[1].Trim(' ', '[', ']'));
             }
 
-            string columnName = column.Name.Trim(' ', '[', ']').Replace(' ', '_');
+            var columnName = column.Name.Trim(' ', '[', ']').Replace(' ', '_');
 
             return string.Format("[FK_{0}_{1}_{2}]", foreignTableName, tableName, columnName);
         }
@@ -402,8 +402,8 @@ namespace FlowOptions.EggOn.DataHost
 
         public SqlConstraint(string tableName, string columnName)
         {
-            this.TableName = tableName;
-            this.ColumnName = columnName;
+            TableName = tableName;
+            ColumnName = columnName;
         }
     }
 }

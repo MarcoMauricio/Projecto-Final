@@ -21,7 +21,7 @@ namespace FlowOptions.EggOn.Service
             var filterTypes = moduleAssemblies.SelectMany(s => s.GetTypes())
                                 .Where(p => filterInterface.IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract);
 
-            foreach (Type filterType in filterTypes)
+            foreach (var filterType in filterTypes)
             {
                 var filter = (FilterAttribute)Activator.CreateInstance(filterType);
                 config.Filters.Add(filter);

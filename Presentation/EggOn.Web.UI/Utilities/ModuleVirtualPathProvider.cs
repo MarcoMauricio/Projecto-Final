@@ -15,8 +15,8 @@ namespace EggOn.Web.UI.Utilities
 
         public ModuleVirtualPathProvider(string path, VirtualPathProvider previous)
         {
-            this.modulesPath = path;
-            this.previousPathProvider = previous;
+            modulesPath = path;
+            previousPathProvider = previous;
         }
 
         public override bool FileExists(string virtualPath)
@@ -70,7 +70,7 @@ namespace EggOn.Web.UI.Utilities
 
         public string GetAbsolutePathFromModulePath(string modulePath)
         {
-            int charsToRemove = "/Modules/".Length;
+            var charsToRemove = "/Modules/".Length;
 
             // TODO: Fix this hack.
             if (modulePath.StartsWith("~"))
@@ -79,7 +79,7 @@ namespace EggOn.Web.UI.Utilities
             }
 
             var relativePath = modulePath.Remove(0, Math.Min(modulePath.Length, charsToRemove));
-            var absolutePath = Path.Combine(this.modulesPath, relativePath);
+            var absolutePath = Path.Combine(modulesPath, relativePath);
 
             return absolutePath;
         }
@@ -99,7 +99,7 @@ namespace EggOn.Web.UI.Utilities
         {
             get
             {
-                var absolutePath = this.pathProvider.GetAbsolutePathFromModulePath(this.VirtualPath);
+                var absolutePath = pathProvider.GetAbsolutePathFromModulePath(VirtualPath);
 
                 return Directory.EnumerateFileSystemEntries(absolutePath)
                     .Where(path => {
@@ -107,15 +107,15 @@ namespace EggOn.Web.UI.Utilities
                     })
                     .Select<string, VirtualFileBase>(path =>
                     {
-                        var virtualPath = VirtualPathUtility.Combine(this.VirtualPath, Path.GetFileName(path));
+                        var virtualPath = VirtualPathUtility.Combine(VirtualPath, Path.GetFileName(path));
 
                         if (Directory.Exists(path))
                         {
-                            return new ModuleVirtualDirectory(virtualPath, this.pathProvider);
+                            return new ModuleVirtualDirectory(virtualPath, pathProvider);
                         } 
                         else
                         {
-                            return new ModuleVirtualFile(virtualPath, this.pathProvider);
+                            return new ModuleVirtualFile(virtualPath, pathProvider);
                         }
                     });
             }
@@ -125,12 +125,12 @@ namespace EggOn.Web.UI.Utilities
         {
             get
             {
-                var absolutePath = this.pathProvider.GetAbsolutePathFromModulePath(this.VirtualPath);
+                var absolutePath = pathProvider.GetAbsolutePathFromModulePath(VirtualPath);
 
                 return Directory.EnumerateDirectories(absolutePath).Select(path =>
                 {
-                    var virtualPath = VirtualPathUtility.Combine(this.VirtualPath, Path.GetFileName(path));
-                    return new ModuleVirtualDirectory(virtualPath, this.pathProvider);
+                    var virtualPath = VirtualPathUtility.Combine(VirtualPath, Path.GetFileName(path));
+                    return new ModuleVirtualDirectory(virtualPath, pathProvider);
                 });
             }
         }
@@ -139,12 +139,12 @@ namespace EggOn.Web.UI.Utilities
         {
             get
             {
-                var absolutePath = this.pathProvider.GetAbsolutePathFromModulePath(this.VirtualPath);
+                var absolutePath = pathProvider.GetAbsolutePathFromModulePath(VirtualPath);
 
                 return Directory.EnumerateFiles(absolutePath).Select(path =>
                 {
-                    var virtualPath = VirtualPathUtility.Combine(this.VirtualPath, Path.GetFileName(path));
-                    return new ModuleVirtualFile(virtualPath, this.pathProvider);
+                    var virtualPath = VirtualPathUtility.Combine(VirtualPath, Path.GetFileName(path));
+                    return new ModuleVirtualFile(virtualPath, pathProvider);
                 });
             }
         }
@@ -162,7 +162,7 @@ namespace EggOn.Web.UI.Utilities
 
         public override Stream Open()
         {
-            var absolutePath = this.pathProvider.GetAbsolutePathFromModulePath(this.VirtualPath);
+            var absolutePath = pathProvider.GetAbsolutePathFromModulePath(VirtualPath);
 
             return new FileStream(absolutePath, FileMode.Open);
         }

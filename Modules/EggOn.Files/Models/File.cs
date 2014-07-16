@@ -38,12 +38,12 @@ namespace FlowOptions.EggOn.Files.Models
         {
             get 
             {
-                if (this.ParentFileId == null)
+                if (ParentFileId == null)
                     return null;
 
                 using (var database = new EggOnDatabase())
                 {
-                    return database.SingleOrDefault<File>(this.ParentFileId);
+                    return database.SingleOrDefault<File>(ParentFileId);
                 }
             }
         }
@@ -55,7 +55,7 @@ namespace FlowOptions.EggOn.Files.Models
             {
                 using (var database = new EggOnDatabase())
                 {
-                    return database.Fetch<File>("WHERE ParentFileId = @0 AND RepositoryId = @1", this.Id, this.RepositoryId);
+                    return database.Fetch<File>("WHERE ParentFileId = @0 AND RepositoryId = @1", Id, RepositoryId);
                 }
             }
         }

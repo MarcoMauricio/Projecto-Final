@@ -39,7 +39,7 @@ namespace FlowOptions.EggOn.Data.Models
             {
                 using (var database = new EggOnDatabase())
                 {
-                    return database.SingleOrDefault<FieldType>(this.FieldTypeId);
+                    return database.SingleOrDefault<FieldType>(FieldTypeId);
                 }
             }
         }
@@ -51,7 +51,7 @@ namespace FlowOptions.EggOn.Data.Models
             {
                 using (var database = new EggOnDatabase())
                 {
-                    return database.SingleOrDefault<Container>(this.ContainerId);
+                    return database.SingleOrDefault<Container>(ContainerId);
                 }
             }
         }

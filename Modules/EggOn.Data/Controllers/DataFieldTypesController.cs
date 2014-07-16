@@ -15,7 +15,7 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/fieldtypes"), HttpGet]
         public List<FieldTypeDto> GetAllDataFieldTypes()
         {
-            List<FieldType> fieldTypes = this.Database.All<FieldType>();
+            var fieldTypes = Database.All<FieldType>();
 
             return Mapper.Map<List<FieldTypeDto>>(fieldTypes);
         }

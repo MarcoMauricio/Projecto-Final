@@ -18,7 +18,7 @@ namespace FlowOptions.EggOn.ModuleCore.Utilities
         {
             V ret;
             
-            bool found = dic.TryGetValue(key, out ret);
+            var found = dic.TryGetValue(key, out ret);
             
             if (found)
                 return ret;

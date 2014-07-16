@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using System.Configuration
+<!DOCTYPE html>
 <html lang="en" data-ng-app="EggOn.Core" data-ng-controller="AppController">
 <head>
     <meta charset="utf-8" />
@@ -23,8 +24,8 @@
     <![endif]-->
 
     <script id="config" type="text/javascript">
-        window.WebServiceUrl = '@System.Configuration.ConfigurationManager.AppSettings["WebServiceUrl"]';
-        window.WebDashboardUrl = '@System.Configuration.ConfigurationManager.AppSettings["WebDashboardUrl"]';
+        window.WebServiceUrl = '@ConfigurationManager.AppSettings["WebServiceUrl"]';
+        window.WebDashboardUrl = '@ConfigurationManager.AppSettings["WebDashboardUrl"]';
     </script>
 </head>
 <body ng-style="CustomBack">

@@ -71,7 +71,7 @@ namespace FlowOptions.EggOn.Service
 
             using (var db = new EggOnDatabase())
             {
-                foreach (Type t in L)
+                foreach (var t in L)
                 {
                     db.CreateOrUpdateTableFromModel(t);
                 }

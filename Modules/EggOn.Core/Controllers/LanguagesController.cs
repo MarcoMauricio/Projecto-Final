@@ -11,7 +11,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("languages"), HttpGet]
         public List<LanguageDto> GetAllLanguages()
         {
-            List<Language> languages = this.Database.All<Language>();
+            var languages = Database.All<Language>();
 
             return Mapper.Map<List<LanguageDto>>(languages);
         }

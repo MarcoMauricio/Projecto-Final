@@ -17,7 +17,7 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/containers/{containerId:guid}/records"), HttpGet]
         public List<Dictionary<string, object>> GetRecords(Guid containerId)
         {
-            var container = this.Database.SingleOrDefault<Container>(containerId);
+            var container = Database.SingleOrDefault<Container>(containerId);
 
             if (container == null)
             {
@@ -38,7 +38,7 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/containers/{containerId:guid}/records"), HttpPost]
         public dynamic CreateRecord(Guid containerId, ExpandoObject data)
         {
-            var container = this.Database.SingleOrDefault<Container>(containerId);
+            var container = Database.SingleOrDefault<Container>(containerId);
 
             if (container == null)
             {
@@ -52,7 +52,7 @@ namespace FlowOptions.EggOn.Data.Controllers
 
             // TODO: Verify fields.
 
-            this.Database.Insert(container.TableName, primaryField.ColumnName, false, newRecord);
+            Database.Insert(container.TableName, primaryField.ColumnName, false, newRecord);
 
             return data;
         }
@@ -60,7 +60,7 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/containers/{containerId:guid}/records/{recordId}"), HttpGet]
         public dynamic GetRecord(Guid containerId, string recordId)
         {
-            Container container = this.Database.SingleOrDefault<Container>(containerId);
+            var container = Database.SingleOrDefault<Container>(containerId);
 
             if (container == null)
             {
@@ -70,7 +70,7 @@ namespace FlowOptions.EggOn.Data.Controllers
             var fields = container.Fields;
             var primaryField = fields.FirstOrDefault(f => f.PrimaryKey);
 
-            dynamic record = this.Database.SingleOrDefault<dynamic>("SELECT * FROM " + container.TableName + " WHERE " + primaryField.ColumnName +  " = @0", recordId);
+            var record = Database.SingleOrDefault<dynamic>("SELECT * FROM " + container.TableName + " WHERE " + primaryField.ColumnName +  " = @0", recordId);
             
             if (record == null)
             {
@@ -83,7 +83,7 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/containers/{containerId:guid}/records/{recordId}"), HttpPut]
         public dynamic PutRecord(Guid containerId, string recordId, ExpandoObject data)
         {
-            Container container = this.Database.SingleOrDefault<Container>(containerId);
+            var container = Database.SingleOrDefault<Container>(containerId);
 
             if (container == null)
             {
@@ -93,7 +93,7 @@ namespace FlowOptions.EggOn.Data.Controllers
             var fields = container.Fields;
             var primaryField = fields.FirstOrDefault(f => f.PrimaryKey);
 
-            dynamic record = this.Database.SingleOrDefault<dynamic>("SELECT * FROM " + container.TableName + " WHERE " + primaryField.ColumnName + " = @0", recordId);
+            var record = Database.SingleOrDefault<dynamic>("SELECT * FROM " + container.TableName + " WHERE " + primaryField.ColumnName + " = @0", recordId);
 
             if (record == null)
             {
@@ -102,7 +102,7 @@ namespace FlowOptions.EggOn.Data.Controllers
 
             // TODO: Verify fields.
 
-            this.Database.Update(container.TableName, primaryField.ColumnName, data, recordId);
+            Database.Update(container.TableName, primaryField.ColumnName, data, recordId);
 
             return data;
         }
@@ -110,7 +110,7 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/containers/{containerId:guid}/records/{recordId}"), HttpDelete]
         public dynamic DeleteRecord(Guid containerId, string recordId)
         {
-            Container container = this.Database.SingleOrDefault<Container>(containerId);
+            var container = Database.SingleOrDefault<Container>(containerId);
 
             if (container == null)
             {
@@ -120,14 +120,14 @@ namespace FlowOptions.EggOn.Data.Controllers
             var fields = container.Fields;
             var primaryField = fields.FirstOrDefault(f => f.PrimaryKey);
 
-            dynamic record = this.Database.SingleOrDefault<dynamic>("SELECT * FROM " + container.TableName + " WHERE " + primaryField.ColumnName + " = @0", recordId);
+            var record = Database.SingleOrDefault<dynamic>("SELECT * FROM " + container.TableName + " WHERE " + primaryField.ColumnName + " = @0", recordId);
             
             if (record == null)
             {
                 throw NotFound("Record not Found.");
             }
 
-            this.Database.Delete(container.TableName, primaryField.ColumnName, record, recordId);
+            Database.Delete(container.TableName, primaryField.ColumnName, record, recordId);
 
             return record;
         }

@@ -12,7 +12,7 @@ namespace FlowOptions.EggOn.Service
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
-    public class WebApiApplication : System.Web.HttpApplication
+    public class WebApiApplication : HttpApplication
     {
         public static List<Assembly> ModuleAssemblies; 
 
@@ -24,7 +24,7 @@ namespace FlowOptions.EggOn.Service
 
             Logger.Debug("Application is loading modules.");
             var moduleAssemblies = LoadModuleAssemblies();
-            WebApiApplication.ModuleAssemblies = moduleAssemblies;
+            ModuleAssemblies = moduleAssemblies;
 
             //AreaRegistration.RegisterAllAreas();
             DataConfig.Register(config, moduleAssemblies);
@@ -40,16 +40,16 @@ namespace FlowOptions.EggOn.Service
 
         private List<Assembly> LoadModuleAssemblies()
         {
-            List<Assembly> assemblies = new List<Assembly>();
+            var assemblies = new List<Assembly>();
 
-            string modulePaths = ConfigurationManager.AppSettings.Get("Modules");
+            var modulePaths = ConfigurationManager.AppSettings.Get("Modules");
 
             if (String.IsNullOrWhiteSpace(modulePaths))
             {
                 return assemblies;
             }
 
-            foreach (string modulePath in modulePaths.Split(';'))
+            foreach (var modulePath in modulePaths.Split(';'))
             {
                 var path = modulePath.Trim();
 

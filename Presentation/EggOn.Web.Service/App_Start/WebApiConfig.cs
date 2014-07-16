@@ -31,11 +31,11 @@ namespace FlowOptions.EggOn.Service
             ));
 
             // Set our own assembly resolver where we add the assemblies we need
-            CustomAssembliesResolver assemblyResolver = new CustomAssembliesResolver(moduleAssemblies);
+            var assemblyResolver = new CustomAssembliesResolver(moduleAssemblies);
             config.Services.Replace(typeof(IAssembliesResolver), assemblyResolver);
 
             // Set our own exception handler
-            CustomExceptionHandler exceptionHandler = new CustomExceptionHandler();
+            var exceptionHandler = new CustomExceptionHandler();
             config.Services.Replace(typeof(IExceptionHandler), exceptionHandler);
 
             // Service Index.
@@ -83,18 +83,18 @@ namespace FlowOptions.EggOn.Service
             if (assemblies == null)
                 throw new ArgumentException("assemblies");
 
-            this.moduleAssemblies = assemblies;
+            moduleAssemblies = assemblies;
         }
 
         public override ICollection<Assembly> GetAssemblies()
         {
             //ICollection<Assembly> baseAssemblies = base.GetAssemblies();
 
-            List<Assembly> assemblies = new List<Assembly>();
+            var assemblies = new List<Assembly>();
 
             assemblies.Add(Assembly.GetExecutingAssembly());
 
-            assemblies.AddRange(this.moduleAssemblies);
+            assemblies.AddRange(moduleAssemblies);
 
             return assemblies;
         }
@@ -141,11 +141,11 @@ namespace FlowOptions.EggOn.Service
         {
             using (var database = new EggOnDatabase())
             {
-                var user = database.SingleOrDefault<dynamic>("SELECT * FROM EggOn.CoreUsers WHERE Email = @0", this.User.Identity.Name);
+                var user = database.SingleOrDefault<dynamic>("SELECT * FROM EggOn.CoreUsers WHERE Email = @0", User.Identity.Name);
 
                 var loadedModules = WebApiApplication.ModuleAssemblies.Select(a => a.GetName().Name).ToArray();
 
-                return this.Request.CreateResponse<ServiceIndex>(HttpStatusCode.NotFound, new ServiceIndex()
+                return Request.CreateResponse<ServiceIndex>(HttpStatusCode.NotFound, new ServiceIndex()
                 {
                     Message = "Welcome to EggOn REST Service!",
                     Version = Assembly.GetExecutingAssembly().GetName().Version.ToString(3),
@@ -161,7 +161,7 @@ namespace FlowOptions.EggOn.Service
         [HttpGet, HttpPut, HttpPost, HttpDelete, HttpOptions, HttpPatch, HttpHead]
         public HttpResponseMessage Handle(string url)
         {
-            return this.Request.CreateResponse<ServiceMessage>(HttpStatusCode.NotFound, new ServiceMessage()
+            return Request.CreateResponse<ServiceMessage>(HttpStatusCode.NotFound, new ServiceMessage()
             {
                 Type = MessageType.Error,
                 HttpStatusCode = HttpStatusCode.NotFound,

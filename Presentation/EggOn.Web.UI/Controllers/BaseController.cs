@@ -29,7 +29,7 @@ namespace FlowOptions.EggOn.WebApplication.Controllers
             {
                 stream = new FileStream(filePath, FileMode.Open);
             }
-            catch (System.IO.FileNotFoundException)
+            catch (FileNotFoundException)
             {
                 return new HttpNotFoundResult();
             }

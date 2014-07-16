@@ -16,14 +16,16 @@ namespace EggOn.Context.Models
         {
             Entities = new List<Entity>();
             //Summary = new Summary();
-           // Category = new Category();
+            // Category = new Category();
         }
         [BsonId]
         public ObjectId Id { get; set; }
         public string TableName { get; set; }
         public string TableIndex { get; set; }
+        public string FileName { get; set; }
         public List<Entity> Entities { get; set; }
         public string Summary { get; set; }
         public string Category { get; set; }
+        public BsonDateTime DateTime { get; set; }
     }
 }

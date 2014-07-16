@@ -20,7 +20,7 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/containers"), HttpGet]
         public List<ContainerDto> GetAllContainers()
         {
-            var containers = this.Database.All<Container>();
+            var containers = Database.All<Container>();
 
             return Mapper.Map<List<ContainerDto>>(containers);
         }
@@ -45,16 +45,16 @@ namespace FlowOptions.EggOn.Data.Controllers
                 return field;
             }).ToList();
 
-            using(var tr = this.Database.GetTransaction())
+            using(var tr = Database.GetTransaction())
             {
-                this.Database.Insert(container);
+                Database.Insert(container);
 
                 foreach (var field in fields)
                 {
-                    this.Database.Insert(field);
+                    Database.Insert(field);
                 }
 
-                this.CreateSqlTableFromContainer(container, fields);
+                CreateSqlTableFromContainer(container, fields);
 
                 tr.Complete();
             }
@@ -65,7 +65,7 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/containers/{containerId:guid}"), HttpGet]
         public ContainerDto GetContainer(Guid containerId)
         {
-            var container = this.Database.SingleOrDefault<Container>(containerId);
+            var container = Database.SingleOrDefault<Container>(containerId);
 
             if (container == null)
             {
@@ -78,7 +78,7 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/containers/{containerId:guid}"), HttpPut]
         public ContainerDto UpdateContainer(Guid containerId, ContainerDto data)
         {
-            var container = this.Database.SingleOrDefault<Container>(containerId);
+            var container = Database.SingleOrDefault<Container>(containerId);
 
             if (container == null)
             {
@@ -88,7 +88,7 @@ namespace FlowOptions.EggOn.Data.Controllers
             Mapper.Map<ContainerDto, Container>(data, container);
             container.Id = containerId;
 
-            this.Database.Update(container);
+            Database.Update(container);
 
             return Mapper.Map<ContainerDto>(container);
         }
@@ -96,20 +96,20 @@ namespace FlowOptions.EggOn.Data.Controllers
         [Route("data/containers/{containerId:guid}"), HttpDelete]
         public ContainerDto DeleteContainer(Guid containerId)
         {
-            var container = this.Database.SingleOrDefault<Container>(containerId);
+            var container = Database.SingleOrDefault<Container>(containerId);
 
             if (container == null)
             {
                 throw NotFound("Data container not found.");
             }
 
-            using (var tr = this.Database.GetTransaction())
+            using (var tr = Database.GetTransaction())
             {
-                this.Database.Delete<Field>("WHERE ContainerId = @0", container.Id);
+                Database.Delete<Field>("WHERE ContainerId = @0", container.Id);
 
-                this.Database.Delete(container);
+                Database.Delete(container);
 
-                this.DeleteSqlTableFromContainer(container);
+                DeleteSqlTableFromContainer(container);
 
                 tr.Complete();
             }
@@ -120,14 +120,14 @@ namespace FlowOptions.EggOn.Data.Controllers
 
         private string GenerateTableName(Container container)
         {
-            Regex rgx = new Regex("[^a-zA-Z0-9_-]");
+            var rgx = new Regex("[^a-zA-Z0-9_-]");
 
-            string tableName = rgx.Replace(container.Name.Replace(' ', '_'), "");
+            var tableName = rgx.Replace(container.Name.Replace(' ', '_'), "");
 
-            string testTableName = tableName;
+            var testTableName = tableName;
 
-            int counter = 1;
-            while (this.Database.Exists<Container>("TableName = @0 AND Id <> @1", testTableName, container.Id))
+            var counter = 1;
+            while (Database.Exists<Container>("TableName = @0 AND Id <> @1", testTableName, container.Id))
             {
                 testTableName = tableName + (counter++);
             }
@@ -146,7 +146,7 @@ namespace FlowOptions.EggOn.Data.Controllers
 
         private string GenerateColumnName(Field field)
         {
-            Regex rgx = new Regex("[^a-zA-Z0-9_-]");
+            var rgx = new Regex("[^a-zA-Z0-9_-]");
 
             return rgx.Replace(field.Name.Replace(' ', '_'), "");
         }
@@ -154,11 +154,11 @@ namespace FlowOptions.EggOn.Data.Controllers
 
         private void CreateSqlTableFromContainer(Container newContainer, List<Field> data)
         {
-            string tableName = newContainer.TableName;
+            var tableName = newContainer.TableName;
 
-            List<SqlColumn> columns = new List<SqlColumn>();
+            var columns = new List<SqlColumn>();
 
-            foreach (Field field in data)
+            foreach (var field in data)
             {
                 columns.Add(new SqlColumn()
                 {
@@ -169,14 +169,14 @@ namespace FlowOptions.EggOn.Data.Controllers
                 });
             }
 
-            this.Database.CreateOrUpdateTable(tableName, columns);
+            Database.CreateOrUpdateTable(tableName, columns);
         }
 
         private void UpdateSqlTableFromContainer(Container oldContainer, List<Field> oldFields, Container newContainer, List<Field> newFields)
         {
             if (oldContainer.TableName != newContainer.TableName)
             {
-                this.Database.Execute("sp_RENAME @0, @1", oldContainer.TableName, newContainer.TableName.Substring("[Data].[".Length, newContainer.TableName.Length - "[Data].[".Length + 1));
+                Database.Execute("sp_RENAME @0, @1", oldContainer.TableName, newContainer.TableName.Substring("[Data].[".Length, newContainer.TableName.Length - "[Data].[".Length + 1));
             }
 
             foreach (var newField in newFields)
@@ -189,18 +189,18 @@ namespace FlowOptions.EggOn.Data.Controllers
                     // Yes -> Rename column and change type.
                     if (newField.Name != oldField.Name)
                     {
-                        this.Database.Execute("sp_RENAME @0, @1, 'COLUMN'", newContainer.TableName + "." + oldField.ColumnName, GenerateColumnName(newField));
+                        Database.Execute("sp_RENAME @0, @1, 'COLUMN'", newContainer.TableName + "." + oldField.ColumnName, GenerateColumnName(newField));
                     }
 
                     if (newField.FieldTypeId != oldField.FieldTypeId)
                     {
-                        this.Database.Execute("ALTER TABLE " + newContainer.TableName + " ALTER COLUMN " + newField.ColumnName + " " + newField.Type.SqlType);
+                        Database.Execute("ALTER TABLE " + newContainer.TableName + " ALTER COLUMN " + newField.ColumnName + " " + newField.Type.SqlType);
                     }
                 }
                 else
                 {
                     // No -> It's a new child item -> Create Column
-                    this.Database.Execute("ALTER TABLE " + newContainer.TableName + " ADD " + newField.ColumnName + " " + newField.Type.SqlType);
+                    Database.Execute("ALTER TABLE " + newContainer.TableName + " ADD " + newField.ColumnName + " " + newField.Type.SqlType);
                 }
             }
 
@@ -211,14 +211,14 @@ namespace FlowOptions.EggOn.Data.Controllers
                 if (!newFields.Any(c => c.Id == oldField.Id))
                 {
                     // Yes -> It's a deleted child item -> Remove Column
-                    this.Database.Execute("ALTER TABLE " + newContainer.TableName + " DROP COLUMN " + oldField.ColumnName);
+                    Database.Execute("ALTER TABLE " + newContainer.TableName + " DROP COLUMN " + oldField.ColumnName);
                 }
             }
         }
 
         private void DeleteSqlTableFromContainer(Container container)
         {
-            this.Database.DropTable(container.TableName);
+            Database.DropTable(container.TableName);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Net;
 using AutoMapper;
 using FlowOptions.EggOn.Base.Controllers;
@@ -10,6 +11,7 @@ using System.Net.Http;
 using FlowOptions.EggOn.Files.Models;
 using FlowOptions.EggOn.ModuleCore;
 using System.Web;
+using File = FlowOptions.EggOn.Files.Models.File;
 
 namespace FlowOptions.EggOn.Files.Controllers
 {
@@ -18,7 +20,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("repositories"), HttpGet]
         public List<RepositoryDto> GetAllRepositories()
         {
-            var repositories = this.Database.All<Repository>();
+            var repositories = Database.All<Repository>();
 
             return Mapper.Map<List<RepositoryDto>>(repositories);
         }
@@ -36,12 +38,12 @@ namespace FlowOptions.EggOn.Files.Controllers
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.BadRequest, "The field \"Type\" is not valid."));
             }
 
-            Repository repository = Mapper.Map<Repository>(data);
+            var repository = Mapper.Map<Repository>(data);
             repository.Id = GuidComb.NewGuid();
-            this.Database.Insert(repository);
+            Database.Insert(repository);
 
-            string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
-            System.IO.Directory.CreateDirectory(repositoryPath);
+            var repositoryPath = Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
+            Directory.CreateDirectory(repositoryPath);
 
             return Mapper.Map<RepositoryDto>(repository);
         }
@@ -49,15 +51,15 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("repositories/{repositoryId:guid}"), HttpGet]
         public RepositoryDto GetRepository(Guid repositoryId)
         {
-            Repository repository = this.Database.SingleOrDefault<Repository>(repositoryId);
+            var repository = Database.SingleOrDefault<Repository>(repositoryId);
 
             if (repository == null)
             {
                 throw NotFound("Repository not Found.");
             }
 
-            string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
-            System.IO.Directory.CreateDirectory(repositoryPath);
+            var repositoryPath = Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
+            Directory.CreateDirectory(repositoryPath);
 
             return Mapper.Map<RepositoryDto>(repository);
         }
@@ -65,7 +67,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("repositories/{repositoryId:guid}"), HttpPut]
         public RepositoryDto PutRepository(Guid repositoryId, RepositoryDto data)
         {
-            Repository repository = this.Database.SingleOrDefault<Repository>(repositoryId);
+            var repository = Database.SingleOrDefault<Repository>(repositoryId);
 
             if (repository == null)
             {
@@ -84,10 +86,10 @@ namespace FlowOptions.EggOn.Files.Controllers
 
             Mapper.Map<RepositoryDto, Repository>(data, repository);
             repository.Id = repositoryId;
-            this.Database.Update(repository);
+            Database.Update(repository);
 
-            string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
-            System.IO.Directory.CreateDirectory(repositoryPath);
+            var repositoryPath = Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
+            Directory.CreateDirectory(repositoryPath);
 
             return Mapper.Map<RepositoryDto>(repository);
         }
@@ -95,24 +97,24 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("repositories/{repositoryId:guid}"), HttpDelete]
         public RepositoryDto DeleteRepository(Guid repositoryId)
         {
-            Repository repository = this.Database.SingleOrDefault<Repository>(repositoryId);
+            var repository = Database.SingleOrDefault<Repository>(repositoryId);
 
             if (repository == null)
             {
                 throw NotFound("Repository not Found.");
             }
 
-            using (var tr = this.Database.GetTransaction())
+            using (var tr = Database.GetTransaction())
             {
-                this.Database.Delete<File>("WHERE RepositoryId = @0", repository.Id);
-                this.Database.Delete(repository);
+                Database.Delete<File>("WHERE RepositoryId = @0", repository.Id);
+                Database.Delete(repository);
 
                 tr.Complete();
             }
 
             // TODO: Think about deleting the repository or archive it.
-            string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
-            System.IO.Directory.Delete(repositoryPath, true);
+            var repositoryPath = Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
+            Directory.Delete(repositoryPath, true);
 
             return Mapper.Map<RepositoryDto>(repository);
         }
@@ -121,14 +123,14 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("repositories/{repositoryId:guid}/files/"), HttpGet]
         public List<FileDto> GetRepositoryRoot(Guid repositoryId)
         {
-            Repository repository = this.Database.SingleOrDefault<Repository>(repositoryId);
+            var repository = Database.SingleOrDefault<Repository>(repositoryId);
 
             if (repository == null)
             {
                 throw NotFound("Repository not Found.");
             }
 
-            var files = this.Database.Fetch<File>("WHERE RepositoryId = @0 AND ParentFileId IS NULL", repository.Id);
+            var files = Database.Fetch<File>("WHERE RepositoryId = @0 AND ParentFileId IS NULL", repository.Id);
 
             return Mapper.Map<List<FileDto>>(files);
         }

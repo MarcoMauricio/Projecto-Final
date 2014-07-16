@@ -30,9 +30,9 @@ namespace FlowOptions.EggOn.Base.Models
             set
             {
                 if (value != null)
-                    this.HashedPassword = BCrypt.Net.BCrypt.HashPassword(value);
+                    HashedPassword = BCrypt.Net.BCrypt.HashPassword(value);
                 else
-                    this.HashedPassword = null;
+                    HashedPassword = null;
             }
         }
 
@@ -53,7 +53,7 @@ namespace FlowOptions.EggOn.Base.Models
             get {
                 using (var database = new EggOnDatabase())
                 {
-                    return database.SingleOrDefault<Language>(this.InterfaceLanguageId);
+                    return database.SingleOrDefault<Language>(InterfaceLanguageId);
                 }
             }
         }
@@ -68,7 +68,7 @@ namespace FlowOptions.EggOn.Base.Models
                     var sql = Sql.Builder
                         .Select("CoreRoles.*")
                         .From("EggOn.CoreUsersRoles").InnerJoin("EggOn.CoreRoles").On("CoreUsersRoles.RoleId = CoreRoles.Id")
-                        .Where("UserId = @0", this.Id);
+                        .Where("UserId = @0", Id);
                     return database.Fetch<Role>(sql);
                 }
             }
@@ -76,10 +76,10 @@ namespace FlowOptions.EggOn.Base.Models
 
         public bool CheckPassword(string password)
         {
-            if (this.HashedPassword == null)
+            if (HashedPassword == null)
                 return false;
 
-            return BCrypt.Net.BCrypt.Verify(password, this.HashedPassword);
+            return BCrypt.Net.BCrypt.Verify(password, HashedPassword);
         }
 
         public bool HasRole(string role)
@@ -89,7 +89,7 @@ namespace FlowOptions.EggOn.Base.Models
                 var sql = Sql.Builder
                     .Select("COUNT(*)")
                     .From("EggOn.CoreUsersRoles").InnerJoin("EggOn.CoreRoles").On("CoreUsersRoles.RoleId = CoreRoles.Id")
-                    .Where("UserId = @0 AND (Name = @1 OR Name = @2)", this.Id, role, "Administrator");
+                    .Where("UserId = @0 AND (Name = @1 OR Name = @2)", Id, role, "Administrator");
                 return database.ExecuteScalar<int>(sql) != 0;
             }
         }

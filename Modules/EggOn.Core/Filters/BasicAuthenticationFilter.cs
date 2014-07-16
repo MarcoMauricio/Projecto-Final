@@ -1,5 +1,6 @@
 ﻿using FlowOptions.EggOn.Base.Models;
 using FlowOptions.EggOn.DataHost;
+using FlowOptions.EggOn.Logging;
 using FlowOptions.EggOn.ModuleCore.ViewModels;
 using System;
 using System.Linq;
@@ -105,7 +106,7 @@ namespace FlowOptions.EggOn.Base.Filters
 
                 if (user == null || !user.CheckPassword(password) || !user.Validated)
                 {
-                    EggOn.Logging.Logger.Info("User authentication failed for '" + username + "' from " + GetClientIp(actionContext.Request) + ".");
+                    Logger.Info("User authentication failed for '" + username + "' from " + GetClientIp(actionContext.Request) + ".");
 
                     return false;
                 }
@@ -115,7 +116,7 @@ namespace FlowOptions.EggOn.Base.Filters
 
                 HttpContext.Current.User = user;
 
-                EggOn.Logging.Logger.Trace("User was authenticated successfully: " + username + " (" + user.Name + ")");
+                Logger.Trace("User was authenticated successfully: " + username + " (" + user.Name + ")");
             }
 
 
@@ -198,7 +199,7 @@ namespace FlowOptions.EggOn.Base.Filters
         public BasicAuthenticationIdentity(string name, string password)
             : base(name, "Basic")
         {
-            this.Password = password;
+            Password = password;
         }
 
         /// <summary>

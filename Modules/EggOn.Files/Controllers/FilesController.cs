@@ -13,17 +13,22 @@ using System.Web;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Text;
+using RestSharp;
+using File = FlowOptions.EggOn.Files.Models.File;
 
 namespace FlowOptions.EggOn.Files.Controllers
 {
     public class FilesController : EggOnApiController
     {
+        private const string Username = "admin@flowoptions.com";
+        private const string Password = "fo";
+
         [Route("files"), HttpPost]
         public FileDto CreateFile()
         {
             if (!Request.Content.IsMimeMultipartContent())
             {
-                FileDto data = Request.Content.ReadAsAsync<FileDto>().Result;
+                var data = Request.Content.ReadAsAsync<FileDto>().Result;
 
                 if (data == null || data.Type == 1)
                 {
@@ -36,7 +41,7 @@ namespace FlowOptions.EggOn.Files.Controllers
                     throw NotFound("Repository not found.");
                 }
 
-                FlowOptions.EggOn.Files.Models.File file = Mapper.Map<FlowOptions.EggOn.Files.Models.File>(data);
+                var file = Mapper.Map<File>(data);
                 file.Id = GuidComb.NewGuid();
                 file.Size = 0;
                 file.Type = FileTypes.Folder;
@@ -47,15 +52,15 @@ namespace FlowOptions.EggOn.Files.Controllers
                 file.RepositoryId = data.RepositoryId;
                 file.ParentFileId = data.ParentFileId;
 
-                string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
-                var filePath = System.IO.Path.Combine(repositoryPath, GenerateFilePath(file));
+                var repositoryPath = Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
+                var filePath = Path.Combine(repositoryPath, GenerateFilePath(file));
 
-                if (System.IO.Directory.Exists(filePath) || System.IO.File.Exists(filePath))
+                if (Directory.Exists(filePath) || System.IO.File.Exists(filePath))
                 {
                     throw BadRequest("A file or folder already exists in that location.");
                 }
 
-                System.IO.Directory.CreateDirectory(filePath);
+                Directory.CreateDirectory(filePath);
 
                 Database.Insert(file);
 
@@ -68,18 +73,18 @@ namespace FlowOptions.EggOn.Files.Controllers
                     throw BadRequest("No file was uploaded.");
                 }
 
-                var uploadedFile = System.Web.HttpContext.Current.Request.Files[0];
+                var uploadedFile = HttpContext.Current.Request.Files[0];
 
-                int size = uploadedFile.ContentLength;
+                var size = uploadedFile.ContentLength;
 
                 byte[] contents = null;
-                using (var binaryReader = new System.IO.BinaryReader(uploadedFile.InputStream))
+                using (var binaryReader = new BinaryReader(uploadedFile.InputStream))
                 {
                     contents = binaryReader.ReadBytes(size);
                 }
 
                 /// Ficheiro uploaded
-                FlowOptions.EggOn.Files.Models.File file = new FlowOptions.EggOn.Files.Models.File()
+                var file = new File()
                 {
                     Id = GuidComb.NewGuid(),
                     Name = uploadedFile.FileName,
@@ -106,10 +111,10 @@ namespace FlowOptions.EggOn.Files.Controllers
                     file.ParentFileId = (Query.ContainsKey("parentFileId")) ? (Guid?)Guid.Parse(Query["parentFileId"]) : null;
                     file.Contents = new byte[0];
 
-                    string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
-                    string path = "";
+                    var repositoryPath = Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
+                    var path = "";
 
-                    FlowOptions.EggOn.Files.Models.File parentFile = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(file.ParentFileId);
+                    var parentFile = Database.SingleOrDefault<File>(file.ParentFileId);
                     while (parentFile != null)
                     {
                         if (parentFile.Type != FileTypes.Folder)
@@ -117,39 +122,31 @@ namespace FlowOptions.EggOn.Files.Controllers
                             throw BadRequest("File is not a folder.");
                         }
 
-                        path = System.IO.Path.Combine("/" + parentFile.Name, path);
-                        parentFile = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(parentFile.ParentFileId);
+                        path = Path.Combine("/" + parentFile.Name, path);
+                        parentFile = Database.SingleOrDefault<File>(parentFile.ParentFileId);
                     }
 
-                    System.IO.Directory.CreateDirectory(System.IO.Path.Combine(repositoryPath, path));
+                    Directory.CreateDirectory(Path.Combine(repositoryPath, path));
 
-                    string filePath = System.IO.Path.Combine(repositoryPath, path, file.Name);
+                    var filePath = Path.Combine(repositoryPath, path, file.Name);
                     System.IO.File.WriteAllBytes(filePath, contents);
 
 
-                    if (file.Name.EndsWith(".pdf"))
+                    if (file.Name.EndsWith(".pdf") || file.Name.EndsWith(".txt"))
                     {
-                        /// TO IMPLEMENT
-                        using (var client = new HttpClient())
+                        var client = new RestClient("http://localhost:8075/");
+                        var request = new RestRequest("context", Method.POST)
                         {
-                            client.BaseAddress = new Uri("http://localhost:8075/");
-                            client.DefaultRequestHeaders.Accept.Clear();
-                            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                           
-                            String u="a@a:"; String p="a";
-
-
-                            var plainTextBytes = Encoding.UTF8.GetBytes(u+p);
-                            String encoded=System.Convert.ToBase64String(plainTextBytes);
-                            client.DefaultRequestHeaders.Authorization= new AuthenticationHeaderValue("Basic", encoded);
-
-
-                            var gizmo = new aux() { filePath = filePath, tableName = "FilesFiles", tableIndex = file.Id.ToString() };
-                            var response = client.PostAsJsonAsync("context", gizmo);
-                            while (!response.IsCompleted) ;
-                            Console.WriteLine(response.Result);
-                        }
+                            Credentials = new NetworkCredential(Username, Password)
+                        };
+                        request.AddParameter("FilePath", filePath);
+                        request.AddParameter("TableName", "FilesFiles");
+                        request.AddParameter("TableIndex", file.Id);
+                        request.AddParameter("FileName", file.Name);
+                        var response = client.Execute(request);
+                        Console.WriteLine(response.Content);
                     }
+
                     else
                     {
                         // File contents embedded in the database.
@@ -164,17 +161,10 @@ namespace FlowOptions.EggOn.Files.Controllers
             }
         }
 
-        class aux
-        {
-            public string filePath { get; set; }
-            public string tableName { get; set; }
-            public string tableIndex { get; set; }
-        }
-
         [Route("files"), HttpGet]
         public List<FileDto> GetFiles(Guid parentFileId)
         {
-            var files = Database.Fetch<FlowOptions.EggOn.Files.Models.File>("WHERE ParentFileId = @0", parentFileId);
+            var files = Database.Fetch<File>("WHERE ParentFileId = @0", parentFileId);
 
             return Mapper.Map<List<FileDto>>(files);
         }
@@ -182,7 +172,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("files/{fileId:guid}")]
         public FileDto GetFile(Guid fileId)
         {
-            FlowOptions.EggOn.Files.Models.File file = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
+            var file = Database.SingleOrDefault<File>(fileId);
 
             if (file == null)
             {
@@ -195,7 +185,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("files/{fileId:guid}"), HttpPut]
         public FileDto UpdateFile(Guid fileId, FileDto data)
         {
-            FlowOptions.EggOn.Files.Models.File file = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
+            var file = Database.SingleOrDefault<File>(fileId);
 
             if (file == null)
             {
@@ -213,7 +203,7 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("files/{fileId:guid}"), HttpDelete]
         public FileDto DeleteFile(Guid fileId)
         {
-            FlowOptions.EggOn.Files.Models.File file = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
+            var file = Database.SingleOrDefault<File>(fileId);
 
             if (file == null)
             {
@@ -232,12 +222,12 @@ namespace FlowOptions.EggOn.Files.Controllers
 
                 Database.Delete(file);
 
-                string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
-                var filePath = System.IO.Path.Combine(repositoryPath, GenerateFilePath(file));
+                var repositoryPath = Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
+                var filePath = Path.Combine(repositoryPath, GenerateFilePath(file));
 
-                if (System.IO.Directory.Exists(filePath))
+                if (Directory.Exists(filePath))
                 {
-                    System.IO.Directory.Delete(filePath, true);
+                    Directory.Delete(filePath, true);
                 }
                 else if (System.IO.File.Exists(filePath))
                 {
@@ -255,14 +245,14 @@ namespace FlowOptions.EggOn.Files.Controllers
         [Route("download/{fileId:guid}"), HttpGet, AllowAnonymous]
         public HttpResponseMessage DownloadFile(Guid fileId, string filepath = "")
         {
-            FlowOptions.EggOn.Files.Models.File file = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(fileId);
+            var file = Database.SingleOrDefault<File>(fileId);
 
             if (file == null)
             {
                 throw NotFound("File not found.");
             }
 
-            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
 
             if (file.RepositoryId != null)
             {
@@ -272,8 +262,8 @@ namespace FlowOptions.EggOn.Files.Controllers
                     throw NotFound("Repository not found.");
                 }
 
-                string repositoryPath = System.IO.Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
-                var filePath = System.IO.Path.Combine(repositoryPath, GenerateFilePath(file));
+                var repositoryPath = Path.Combine(HttpRuntime.AppDomainAppPath, ConfigurationManager.AppSettings["RepositoriesPath"], repository.Id.ToString());
+                var filePath = Path.Combine(repositoryPath, GenerateFilePath(file));
 
                 // TODO: Use streams or async to prevent huge memory usage.
                 response.Content = new ByteArrayContent(System.IO.File.ReadAllBytes(filePath));
@@ -283,27 +273,27 @@ namespace FlowOptions.EggOn.Files.Controllers
                 response.Content = new ByteArrayContent(file.Contents);
             }
 
-            string contentType = file.ContentType;
+            var contentType = file.ContentType;
             if (String.IsNullOrWhiteSpace(contentType))
             {
                 contentType = MimeTypesHelper.GetMimeType(file.Name);
             }
 
-            response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(contentType);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
 
             return response;
         }
 
 
-        private string GenerateFilePath(FlowOptions.EggOn.Files.Models.File file)
+        private string GenerateFilePath(File file)
         {
-            string path = file.Name;
+            var path = file.Name;
 
-            FlowOptions.EggOn.Files.Models.File parentFile = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(file.ParentFileId);
+            var parentFile = Database.SingleOrDefault<File>(file.ParentFileId);
             while (parentFile != null)
             {
-                path = System.IO.Path.Combine("/" + parentFile.Name, path);
-                parentFile = Database.SingleOrDefault<FlowOptions.EggOn.Files.Models.File>(parentFile.ParentFileId);
+                path = Path.Combine("/" + parentFile.Name, path);
+                parentFile = Database.SingleOrDefault<File>(parentFile.ParentFileId);
             }
 
             return path;

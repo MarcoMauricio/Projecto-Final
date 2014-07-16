@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Context.NLP.Algorithms
+namespace EggOn.Context.NLP.Algorithms
 {
     class NamedEntitySummary
     {
@@ -19,24 +20,22 @@ namespace Context.NLP.Algorithms
         /// </returns>
         public static string GetSummary(string text)
         {
+            char[] delimiterChars = { '.', '\t' };
             var entitiesList = NamedEntityExtraction.GetEntities(text);
             var sentences = new Dictionary<string, int>();
-            foreach (
-                var s in from s in text.Split('.')
-                         from keyValuePair
-                         in entitiesList
-                         where s.Contains(keyValuePair)
-                         select s)
-            {
-                int currentCount;
-                sentences.TryGetValue(s, out currentCount);
-                sentences[s] = currentCount + 1;
-            }
+            foreach (var s in text.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var keyValuePair in entitiesList)
+                {
+                    if (!s.Contains(keyValuePair)) continue;
+                    int currentCount;
+                    sentences.TryGetValue(s, out currentCount);
+                    sentences[s] = currentCount + 1;
+                }
 
-            StringBuilder summary = new StringBuilder();
-            foreach (var keyValue in sentences.OrderByDescending(key => key.Value))
+            var summary = new StringBuilder();
+            foreach (var keyValue in sentences.OrderByDescending(key => key.Value).Take(3))
             {
-                summary.AppendLine(keyValue.Key);
+                summary.AppendLine(keyValue.Key + ".\n");
             }
             return summary.ToString();
         }

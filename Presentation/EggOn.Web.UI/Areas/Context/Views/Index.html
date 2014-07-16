@@ -1,29 +1,44 @@
 ﻿<div class="row">
+    <title>Context</title>
     <ul class="breadcrumb page-title">
         <li><a href="/context">Context</a></li>
         <li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
     </ul>
     <div class="row">
-              <table class="table table-striped table-hover ">
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>ID</th>
-                        <th>Table Name</th>
-                        <th>Index</th>
-                        <th>Summary</th>
-                        <th>Entities</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="document in documents" style="display: block;">
-                        <td class="col-md-1">{{document.Category}}</td>
-                        <td class="col-md-1">{{document.TableName}}</td>
-                        <td class="col-md-1">{{document.TableIndex}}</td>
-                        <td class="col-md-4">{{document.Summary}}</td>
-                        <td class="col-md-4">{{document.Entities}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        Category : <select name="categories">
+                       <option value="science">Science</option>
+                       <option value="financial">Financial</option>
+                       <option value="email">Email</option>
+                   </select>
+
+        Search File : <input ng-model="search.FileName">
+
+        Search Summary : <input ng-model="search.Summary">
     </div>
+
+    <div class="row ">
+        <table class="table table-striped table-hover  col-md-12">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>File Name</th>
+                    <th>Summary</th>
+                    <th>Date</th>
+                    <th>Changes</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="document in documents| filter:search:strict" ng-click="editDocument(document)" style="cursor: pointer">
+                    <td class="col-md-1">{{document.Category}}</td>
+                    <td class="col-md-1">{{document.FileName}}</td>
+                    <td class="col-md-8">{{document.Summary}}</td>
+                    <td class="col-md-1">{{document.DateTime}}</td>
+                    <td class="col-md-1">
+                        <button class="btn btn-xs btn-default" type="button" ng-click="refreshDocument(document)"><i class="fa fa-edit"></i> Refresh</button>
+                        <button class="btn btn-xs btn-danger" type="button" ng-click="deleteDocument(document)"><i class="fa fa-times"></i>  Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

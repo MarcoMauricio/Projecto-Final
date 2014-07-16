@@ -21,7 +21,7 @@ namespace EggOn.Context.Utils
 
         public static string GetPdfText(String pdfPath)
         {
-            ITextExtractionStrategy strategy = new LocationTextExtractionStrategy();
+            ITextExtractionStrategy strategy = new SimpleTextExtractionStrategy();
             using (var reader = new PdfReader(pdfPath))
             {
                 var text = new StringBuilder();

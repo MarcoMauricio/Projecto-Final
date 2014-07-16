@@ -19,9 +19,9 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("users"), HttpGet]
         public List<UserDto> GetAllUsers()
         {
-            List<User> users = (List<User>)this.Database.All<User>();
+            var users = (List<User>)Database.All<User>();
 
-            if (this.CurrentUser.HasRole("Administrator"))
+            if (CurrentUser.HasRole("Administrator"))
             {
                 return Mapper.Map<List<User>, List<UserDto>>(users);
             }
@@ -30,9 +30,9 @@ namespace FlowOptions.EggOn.Base.Controllers
             //    Error = "You need to be administrator to see this resource."
             //}));
 
-            List<UserDto> filteredUsers = new List<UserDto>();
+            var filteredUsers = new List<UserDto>();
 
-            foreach (User user in users)
+            foreach (var user in users)
             {
                 filteredUsers.Add(new UserDto()
                 {
@@ -48,13 +48,13 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("users"), HttpPost, AllowAnonymous]
         public HttpResponseMessage CreateUser([FromBody] UserDto data)
         {
-            User user = new User();
+            var user = new User();
 
             user.Id = GuidComb.NewGuid();
 
             var AllowUsersToRegister = ConfigurationManager.AppSettings["AllowUsersToRegister"];
             if (String.IsNullOrEmpty(AllowUsersToRegister) || AllowUsersToRegister.ToLower().Trim() != "true" ||
-                this.CurrentUser != null && !this.CurrentUser.HasRole("Administrator"))
+                CurrentUser != null && !CurrentUser.HasRole("Administrator"))
             {
                 throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.NotImplemented, "User registration is disabled."));
             }
@@ -71,7 +71,7 @@ namespace FlowOptions.EggOn.Base.Controllers
             }
             user.Email = data.Email.ToLower().Trim();
 
-            if (this.Database.Exists<User>("Email = @0", user.Email))
+            if (Database.Exists<User>("Email = @0", user.Email))
             {
                 throw BadRequest("An user with that email already exists.");
             }
@@ -83,10 +83,10 @@ namespace FlowOptions.EggOn.Base.Controllers
             user.Password = data.Password;
 
             // TODO: Configure default language.
-            user.InterfaceLanguageId = this.Database.FirstOrDefault<Language>("WHERE Code = @0", "en").Id;
+            user.InterfaceLanguageId = Database.FirstOrDefault<Language>("WHERE Code = @0", "en").Id;
             if (data.InterfaceLanguageId.HasValue)
             {
-                if (this.Database.Exists<Language>(data.InterfaceLanguageId.Value))
+                if (Database.Exists<Language>(data.InterfaceLanguageId.Value))
                 {
                     user.InterfaceLanguageId = data.InterfaceLanguageId.Value;
                 } 
@@ -112,29 +112,29 @@ namespace FlowOptions.EggOn.Base.Controllers
             user.Validated = true;
 
 
-            using (var tr = this.Database.GetTransaction())
+            using (var tr = Database.GetTransaction())
             {
-                this.Database.Insert(user);
+                Database.Insert(user);
 
-                if (this.CurrentUser != null && this.CurrentUser.HasRole("Administrator"))
+                if (CurrentUser != null && CurrentUser.HasRole("Administrator"))
                 {
                     foreach (var role in data.Roles)
                     {
-                        this.Database.Insert("EggOn.CoreUsersRoles", null, false, new { UserId = user.Id, RoleId = role.Id }); 
+                        Database.Insert("EggOn.CoreUsersRoles", null, false, new { UserId = user.Id, RoleId = role.Id }); 
                     }
                 }
 
                 tr.Complete();
             }
 
-            user = this.Database.SingleOrDefault<User>("WHERE Email = @0", data.Email);
+            user = Database.SingleOrDefault<User>("WHERE Email = @0", data.Email);
 
             var UserEmailValidationRequired = ConfigurationManager.AppSettings["UserEmailValidationRequired"];
             var SMTPEmail = ConfigurationManager.AppSettings["SMTPEmail"];
 
             if (String.IsNullOrEmpty(UserEmailValidationRequired) || UserEmailValidationRequired.ToLower().Trim() != "true" ||
                 String.IsNullOrEmpty(ConfigurationManager.AppSettings["SMTPEmail"]) ||
-                this.CurrentUser != null && this.CurrentUser.HasRole("Administrator"))
+                CurrentUser != null && CurrentUser.HasRole("Administrator"))
             {
                 return Request.CreateResponse<UserDto>(HttpStatusCode.Created, Mapper.Map<UserDto>(user));
             }
@@ -149,19 +149,19 @@ namespace FlowOptions.EggOn.Base.Controllers
             user.Validated = false;
             user.HashKey = Guid.NewGuid().ToString("N").ToUpper();
 
-            this.Database.Save(user);
+            Database.Save(user);
 
-            MailMessage mail = new MailMessage();
-            SmtpClient client = new SmtpClient(ConfigurationManager.AppSettings["SMTPServerHost"], Convert.ToInt32(ConfigurationManager.AppSettings["SMTPServerPort"]));
+            var mail = new MailMessage();
+            var client = new SmtpClient(ConfigurationManager.AppSettings["SMTPServerHost"], Convert.ToInt32(ConfigurationManager.AppSettings["SMTPServerPort"]));
 
             if (ConfigurationManager.AppSettings["SMTPUsername"] != "")
             {
-                System.Net.NetworkCredential myCredential = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["SMTPUsername"], ConfigurationManager.AppSettings["SMTPPassword"]);
+                var myCredential = new NetworkCredential(ConfigurationManager.AppSettings["SMTPUsername"], ConfigurationManager.AppSettings["SMTPPassword"]);
                 client.UseDefaultCredentials = false;
                 client.Credentials = myCredential;
             }
 
-            string url = ConfigurationManager.AppSettings["WebDashboardUrl"] + "/?key=" + user.HashKey;
+            var url = ConfigurationManager.AppSettings["WebDashboardUrl"] + "/?key=" + user.HashKey;
 
             mail.From = new MailAddress(ConfigurationManager.AppSettings["SMTPEmail"]);
             mail.To.Add(user.Email);
@@ -181,12 +181,12 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("users/{userId:guid}"), HttpGet]
         public UserDto GetUser(Guid userId)
         {
-            if (!this.CurrentUser.HasRole("Administrator") && this.CurrentUser.Id != userId)
+            if (!CurrentUser.HasRole("Administrator") && CurrentUser.Id != userId)
             {
                throw Forbidden("You need to be administrator to see this resource.");
             }
 
-            User user = this.Database.SingleOrDefault<User>(userId);
+            var user = Database.SingleOrDefault<User>(userId);
 
             if (user == null)
             {
@@ -200,12 +200,12 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("users/{userId:guid}"), HttpPut]
         public UserDto UpdateUser(Guid userId, [FromBody] UserDto data)
         {
-            if (!this.CurrentUser.HasRole("Administrator") && this.CurrentUser.Id != userId)
+            if (!CurrentUser.HasRole("Administrator") && CurrentUser.Id != userId)
             {
                 throw Forbidden("You need to be administrator to see this resource.");
             }
 
-            User user = this.Database.SingleOrDefault<User>(userId);
+            var user = Database.SingleOrDefault<User>(userId);
 
             if (user == null)
             {
@@ -224,7 +224,7 @@ namespace FlowOptions.EggOn.Base.Controllers
 
             if (data.InterfaceLanguageId.HasValue)
             {
-                if (this.Database.Exists<Language>(data.InterfaceLanguageId.Value))
+                if (Database.Exists<Language>(data.InterfaceLanguageId.Value))
                 {
                     user.InterfaceLanguageId = data.InterfaceLanguageId.Value;
                 }
@@ -234,16 +234,16 @@ namespace FlowOptions.EggOn.Base.Controllers
                 }
             }
 
-            using (var tr = this.Database.GetTransaction())
+            using (var tr = Database.GetTransaction())
             {
-                this.Database.Update(user);
+                Database.Update(user);
 
-                if (this.CurrentUser.HasRole("Administrator"))
+                if (CurrentUser.HasRole("Administrator"))
                 {
-                    this.Database.Delete("EggOn.CoreUsersRoles", "UserId", null, user.Id);
+                    Database.Delete("EggOn.CoreUsersRoles", "UserId", null, user.Id);
                     foreach (var role in data.Roles)
                     {
-                        this.Database.Insert("EggOn.CoreUsersRoles", null, false, new { UserId = user.Id, RoleId = role.Id });
+                        Database.Insert("EggOn.CoreUsersRoles", null, false, new { UserId = user.Id, RoleId = role.Id });
                     }
                 }
 
@@ -259,22 +259,22 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("users/{userId:guid}"), HttpDelete]
         public UserDto DeleteUser(Guid userId)
         {
-            if (!this.CurrentUser.HasRole("Administrator") && this.CurrentUser.Id != userId)
+            if (!CurrentUser.HasRole("Administrator") && CurrentUser.Id != userId)
             {
                 throw Forbidden("You need to be administrator to see this resource.");
             }
 
-            User user = this.Database.SingleOrDefault<User>(userId);
+            var user = Database.SingleOrDefault<User>(userId);
 
             if (user == null)
             {
                 throw NotFound("User not Found.");
             }
 
-            using (var tr = this.Database.GetTransaction())
+            using (var tr = Database.GetTransaction())
             {
-                this.Database.Delete("EggOn.CoreUsersRoles", "UserId", null, user.Id);
-                this.Database.Delete(user);
+                Database.Delete("EggOn.CoreUsersRoles", "UserId", null, user.Id);
+                Database.Delete(user);
 
                 tr.Complete();
             }
@@ -286,7 +286,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("users/current"), HttpGet]
         public UserDto FetchCurrentUser()
         {
-            return Mapper.Map<UserDto>(this.CurrentUser);
+            return Mapper.Map<UserDto>(CurrentUser);
         }
 
 
@@ -294,7 +294,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("users/validate"), HttpPost, AllowAnonymous]
         public HttpResponseMessage ValidateUser([FromUri] string key)
         {
-            User user = this.Database.SingleOrDefault<User>("WHERE HashKey = @0", key);
+            var user = Database.SingleOrDefault<User>("WHERE HashKey = @0", key);
 
             if (user == null)
             {
@@ -304,7 +304,7 @@ namespace FlowOptions.EggOn.Base.Controllers
             user.Validated = true;
             user.HashKey = null;
 
-            this.Database.Update(user, new string[] { "Validated", "HashKey" });
+            Database.Update(user, new string[] { "Validated", "HashKey" });
 
             return Request.CreateResponse(HttpStatusCode.OK, new ServiceMessage()
             {
@@ -317,7 +317,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("users/recover1"), HttpPost, AllowAnonymous]
         public HttpResponseMessage RecoverPasswordStepOne([FromUri] string email)
         {
-            User user = this.Database.SingleOrDefault<User>("WHERE Email = @0", email.Trim());
+            var user = Database.SingleOrDefault<User>("WHERE Email = @0", email.Trim());
 
             if (user == null)
             {
@@ -328,12 +328,12 @@ namespace FlowOptions.EggOn.Base.Controllers
                 });
             }
 
-            MailMessage mail = new MailMessage();
-            SmtpClient client = new SmtpClient(ConfigurationManager.AppSettings["SMTPServerHost"], Convert.ToInt32(ConfigurationManager.AppSettings["SMTPServerPort"]));
+            var mail = new MailMessage();
+            var client = new SmtpClient(ConfigurationManager.AppSettings["SMTPServerHost"], Convert.ToInt32(ConfigurationManager.AppSettings["SMTPServerPort"]));
 
             if (ConfigurationManager.AppSettings["SMTPUsername"] != "")
             {
-                System.Net.NetworkCredential myCredential = new System.Net.NetworkCredential(ConfigurationManager.AppSettings["SMTPUsername"], ConfigurationManager.AppSettings["SMTPPassword"]);
+                var myCredential = new NetworkCredential(ConfigurationManager.AppSettings["SMTPUsername"], ConfigurationManager.AppSettings["SMTPPassword"]);
                 client.UseDefaultCredentials = false;
                 client.Credentials = myCredential;
             }
@@ -343,9 +343,9 @@ namespace FlowOptions.EggOn.Base.Controllers
             {
                 user.HashKey = Guid.NewGuid().ToString("N").ToUpper();
 
-                this.Database.Update(user, new string[] { "HashKey" });
+                Database.Update(user, new string[] { "HashKey" });
 
-                string url = "http://www." + ConfigurationManager.AppSettings["Domain"] + "/recover?key=" + user.HashKey;
+                var url = "http://www." + ConfigurationManager.AppSettings["Domain"] + "/recover?key=" + user.HashKey;
 
                 mail.From = new MailAddress(ConfigurationManager.AppSettings["SMTPEmail"]);
                 mail.To.Add(user.Email);
@@ -366,7 +366,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("users/recover2"), HttpPost, AllowAnonymous]
         public HttpResponseMessage RecoverPasswordStepTwo([FromUri] string key, [FromUri] string password)
         {
-            User user = this.Database.SingleOrDefault<User>("WHERE HashKey = @0", key);
+            var user = Database.SingleOrDefault<User>("WHERE HashKey = @0", key);
 
             if (user == null)
             {
@@ -376,7 +376,7 @@ namespace FlowOptions.EggOn.Base.Controllers
             user.Password = password;
             user.HashKey = null;
 
-            this.Database.Update(user, new string[] { "Password", "HashKey" });
+            Database.Update(user, new string[] { "Password", "HashKey" });
 
             return Request.CreateResponse(HttpStatusCode.OK, new ServiceMessage()
             {

@@ -1,4 +1,5 @@
-﻿using FlowOptions.EggOn.ModuleCore.ViewModels;
+﻿using FlowOptions.EggOn.Logging;
+using FlowOptions.EggOn.ModuleCore.ViewModels;
 using System.Net;
 using System.Net.Http;
 using System.Web;
@@ -10,9 +11,9 @@ namespace FlowOptions.Web.Service.Filters
     {
         public override void OnException(HttpActionExecutedContext context)
         {
-            string message = "Exception was thrown when calling \"" + context.Request.RequestUri.AbsolutePath + "\": " + context.Exception.Message;
+            var message = "Exception was thrown when calling \"" + context.Request.RequestUri.AbsolutePath + "\": " + context.Exception.Message;
 
-            FlowOptions.EggOn.Logging.Logger.Error(message);
+            Logger.Error(message);
 
             context.Response = context.Request.CreateResponse<ServiceMessage>(HttpStatusCode.InternalServerError, new ServiceMessage()
             {

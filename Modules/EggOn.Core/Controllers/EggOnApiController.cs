@@ -42,9 +42,9 @@ namespace FlowOptions.EggOn.Base.Controllers
             {
                 if (currentUserCache == null)
                 {
-                    if (this.User != null && this.User.Identity.IsAuthenticated)
+                    if (User != null && User.Identity.IsAuthenticated)
                     {
-                        currentUserCache = this.Database.SingleOrDefault<User>("WHERE Email = @0", this.User.Identity.Name);
+                        currentUserCache = Database.SingleOrDefault<User>("WHERE Email = @0", User.Identity.Name);
                     }
                 }
 
@@ -116,7 +116,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         /// <returns>A new <see cref="HttpResponseException"/></returns>
         private HttpResponseException CreateHttpResponseException(string reason, HttpStatusCode code)
         {
-            throw new HttpResponseException(this.Request.CreateResponse<ServiceMessage>(code, new ServiceMessage()
+            throw new HttpResponseException(Request.CreateResponse<ServiceMessage>(code, new ServiceMessage()
             {
                 Type = MessageType.Error,
                 HttpStatusCode = code,

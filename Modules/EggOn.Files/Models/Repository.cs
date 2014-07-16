@@ -20,7 +20,7 @@ namespace FlowOptions.EggOn.Files.Models
 
         public Repository()
         {
-            this.Type = 1; // Local
+            Type = 1; // Local
         }
     }
 }

@@ -1,60 +1,274 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Context.NLP.Algorithms
+namespace EggOn.Context.NLP.Algorithms
 {
-    public class NamedEntityExtraction
+    class NamedEntityExtraction
     {
-        private static readonly List<string> FiltersEnglish = new List<string>{
-            /*A*/   "and","all", "another", "any", "anybody", "anyone", "anything", "an","a","aboard","abnormally","about","abroad","absentmindedly","absolutely","abundantly","accidentally","accordingly","actively","actually","acutely","admiringly","affectionately","affirmatively","after","afterwards","agreeably","almost","already","always","amazingly","angrily","annoyingly","annually","anxiously","anyhow","anyplace","anyway","anywhere","appreciably","appropriately","around","arrogantly","aside","assuredly","astonishingly","away","awfully","awkwardly",
-            /*B*/   "both","but","badly","barely","bashfully","beautifully","before","begrudgingly","believably","bewilderedly","bewilderingly","bitterly","bleakly","blindly","blissfully","boldly","boastfully","boldly","boyishly","bravely","briefly","brightly","brilliantly","briskly","brutally","busily",
-            /*C*/   "calmly","candidly","carefully","carelessly","casually","cautiously","certainly","charmingly","cheerfully","chiefly","childishly","cleanly","clearly","cleverly","closely","cloudily","clumsily","coaxingly","coincidentally","coldly","colorfully","commonly","comfortably","compactly","compassionately","completely","confusedly","consequently","considerably","considerately","consistently","constantly","continually","continuously","coolly","correctly","courageously","covertly","cowardly","crazily","crossly","cruelly","cunningly","curiously","currently","customarily","cutely",
-            /*D*/   "daily","daintily","dangerously","daringly","darkly","dastardly","dearly","decently","deeply","defiantly","deftly","deliberately","delicately","delightfully","densely","diagonally","differently","diligently","dimly","directly","disorderly","divisively","docilely","dopily","doubtfully","down","dramatically","dreamily","during",
-            /*E*/   "each", "either" ,"everybody", "everyone", "everything","eagerly","early","earnestly","easily","efficiently","effortlessly","elaborately","eloquently","elegantly","elsewhere","emotionally","endlessly","energetically","enjoyably","enormously","enough","enthusiastically","entirely","equally","especially","essentially","eternally","ethically","even","evenly","eventually","evermore","every","everywhere","evidently","evocatively","exactly","exceedingly","exceptionally","excitedly","exclusively","explicitly","expressly","extensively","externally","extra","extraordinarily","extremely",
-            /*F*/   "fairly","faithfully","famously","far","fashionably","fast","fatally","favorably","ferociously","fervently","fiercely","fiery","finally","financially","finitely","fluently","fondly","foolishly","forever","formally","formerly","fortunately","forward","frankly","frantically","freely","frequently","frenetically","fully","furiously","furthermore",
-            /*G*/   "generally","generously","genuinely","gently","genuinely","girlishly","gladly","gleefully","gracefully","graciously","gradually","gratefully","greatly","greedily","grimly","grudgingly",
-            /*H*/   "he", "her", "hers", "herself","his" ,"him", "himself", "his","habitually","half-heartedly","handily","handsomely","haphazardly","happily","hastily","harmoniously","harshly","hastily","hatefully","hauntingly","healthily","heartily","heavily","helpfully","hence","highly","hitherto","honestly","hopelessly","horizontally","hourly","how","however","hugely","humorously","hungrily","hurriedly","hysterically",
-            /*I*/   "i", "it", "its" ,"itself","instead","if", "in","icily","identifiably","idiotically","imaginatively","immeasurably","immediately","immensely","impatiently","impressively","inappropriately","incessantly","incorrectly","indeed","independently","indoors","indubitably","inevitably","infinitely","informally","infrequently","innocently","inquisitively","instantly","intelligently","intensely","intently","interestingly","intermittently","internally","invariably","invisibly","inwardly","ironically","irrefutably","irritably",
-            /*J*/   "jaggedly","jauntily","jealously","jovially","joyfully","joylessly","joyously","jubilantly","judgmentally","just","justly",
-            /*K*/   "keenly","kiddingly","kindheartedly","kindly","knavishly","knottily","knowingly","knowledgeably","kookily",
-            /*L*/   "lastly","late","lately","later","lazily","less","lightly","likely","limply","lithely","lively","loftily","longingly","loosely","loudly","lovingly","loyally","luckily","luxuriously",
-            /*M*/   "my","many", "me", "mine", "more", "most" ,"much" ,"myself","madly","magically","mainly","majestically","markedly","materially","meaningfully","meanly","meantime","meanwhile","measurably","mechanically","medically","menacingly","merely","merrily","methodically","mightily","miserably","mockingly","monthly","morally","more","moreover","mortally","mostly","much","mysteriously",
-            /*N*/   "neither" ,"no", "nobody", "none", "nothing","no","now","nastily","naturally","naughtily","nearby","nearly","neatly","needily","negatively","nervously","never","nevertheless","next","nicely","nightly","noisily","normally","nosily","not","now","nowadays","numbly",
-            /*O*/   "one" ,"other" ,"others" ,"ours", "ourselves","obediently","obligingly","obnoxiously","obviously","occasionally","oddly","offensively","officially","often","ominously","once","only","openly","optimistically","orderly","ordinarily","outdoors","outrageously","outwardly","outwards","overconfidently","overseas",
-            /*P*/   "painfully","painlessly","paradoxically","partially","particularly","passionately","patiently","perfectly","periodically","perpetually","persistently","personally","persuasively","physically","plainly","playfully","poetically","poignantly","politely","poorly","positively","possibly","potentially","powerfully","presently","presumably","prettily","previously","primly","principally","probably","promptly","properly","proudly","punctually","puzzlingly",
-            /*Q*/   "quaintly","queasily","questionably","questioningly","quicker","quickly","quietly","quirkily","quite","quizzically",
-            /*R*/   "randomly","rapidly","rarely","readily","really","reasonably","reassuringly","recently","recklessly","regularly","reliably","reluctantly","remarkably","repeatedly","reproachfully","reponsibly","resentfully","respectably","respectfully","restfully","richly","ridiculously","righteously","rightfully","rightly","rigidly","roughly","routinely","rudely","ruthlessly",
-            /*S*/   "several", "she" ,"some" ,"somebody", "someone","sadly","safely","scarcely","scarily","scientifically","searchingly","secretively","securely","sedately","seemingly","seldom","selfishly","selflessly","separately","seriously","shakily","shamelessly","sharply","sheepishly","shoddily","shortly","shrilly","significantly","silently","simply","sincerely","singularly","shyly","skillfully","sleepily","slightly","slowly","slyly","smoothly","so","softly","solely","solemnly","solidly","silicitiously","somehow","sometimes","somewhat","somewhere","soon","specially","specifically","spectacularly","speedily","spiritually","splendidly","sporadically","spasmodically","startlingly","steadily","stealthily","sternly","still","strenuously","stressfully","strictly","structurally","studiously","stupidly","stylishly","subsequently","substantially","subtly","successfully","suddenly","sufficiently","suitably","superficially","supremely","surely","surprisingly","suspiciously","sweetly","swiftly","sympathetically","systematically",
-            /*T*/   "that", "their", "theirs" ,"them", "themselves", "these", "they", "this", "those","the","temporarily","tenderly","tensely","tepidly","terribly","thankfully","then","there","thereby","thoroughly","thoughtfully","thus","tightly","today","together","tomorrow","too","totally","touchingly","tremendously","truly","truthfully","twice",
-            /*U*/   "us","ultimately","unabashedly","unanimously","unbearably","unbelievably","unemotionally","unethically","unexpectedly","unfailingly","unfavorably","unfortunately","uniformly","unilaterally","unimpressively","universally","unnaturally","unnecessarily","unquestionably","unwillingly","up","upbeat","unkindly","upliftingly","upright","unselfishly","upside-down","unskillfully","upward","upwardly","urgently","usefully","uselessly","usually","utterly",
-            /*V*/   "vacantly","vaguely","vainly","valiantly","vastly","verbally","vertically","very","viciously","victoriously","vigilantly","vigorously","violently","visibly","visually","vivaciously","voluntarily",
-            /*W*/   "with","we", "what", "whatever", "which", "whichever" ,"who", "whoever", "whom" ,"whomever" ,"whose","warmly","weakly","wearily","weekly","well","wetly","when","where","while","whole-heartedly","wholly","why","wickedly","widely","wiggly","wildly","willfully","willingly","wisely","woefully","wonderfully","worriedly","worthily","wrongly",
-            /*Y*/   "you", "your", "yours" ,"yourself" ,"yourselves","yearly","yearningly","yesterday","yet","youthfully",
-            /*Z*/   "zanily","zealously","zestfully","zestily"};
-
+        private static readonly List<string> FiltersEnglish = new List<string>
+        {
+            "--",
+            "-",
+            "a",
+            "about",
+            "again",
+            "all",
+            "along",
+            "almost",
+            "also",
+            "always",
+            "am",
+            "among",
+            "an",
+            "and",
+            "another",
+            "any",
+            "anybody",
+            "anything",
+            "anywhere",
+            "apart",
+            "are",
+            "around",
+            "as",
+            "at",
+            "be",
+            "because",
+            "been",
+            "before",
+            "being",
+            "between",
+            "both",
+            "but",
+            "by",
+            "can",
+            "cannot",
+            "comes",
+            "could",
+            "couldn",
+            "did",
+            "didn",
+            "different",
+            "do",
+            "does",
+            "doesn",
+            "done",
+            "don",
+            "down",
+            "during",
+            "each",
+            "either",
+            "enough",
+            "etc",
+            "even",
+            "every",
+            "everybody",
+            "everything",
+            "everywhere",
+            "except",
+            "few",
+            "final",
+            "first",
+            "for",
+            "from",
+            "get",
+            "go",
+            "goes",
+            "gone",
+            "good",
+            "got",
+            "had",
+            "has",
+            "have",
+            "having",
+            "he",
+            "hence",
+            "her",
+            "him",
+            "his",
+            "how",
+            "however",
+            "I",
+            "i.e",
+            "if",
+            "in",
+            "initial",
+            "into",
+            "is",
+            "isn",
+            "it",
+            "its",
+            "it",
+            "itself",
+            "just",
+            "last",
+            "least",
+            "less",
+            "let",
+            "lets",
+            "let's",
+            "like",
+            "lot",
+            "made",
+            "make",
+            "many",
+            "may",
+            "maybe",
+            "me",
+            "might",
+            "mine",
+            "more",
+            "most",
+            "Mr",
+            "much",
+            "must",
+            "my",
+            "near",
+            "need",
+            "next",
+            "niether",
+            "no",
+            "nobody",
+            "nor",
+            "not",
+            "nothing",
+            "now",
+            "nowhere",
+            "of",
+            "off",
+            "often",
+            "oh",
+            "ok",
+            "okay",
+            "on",
+            "once",
+            "one",
+            "only",
+            "onto",
+            "or",
+            "other",
+            "our",
+            "ours",
+            "out",
+            "over",
+            "own",
+            "perhaps",
+            "previous",
+            "quite",
+            "rather",
+            "re",
+            "really",
+            "s",
+            "said",
+            "same",
+            "say",
+            "see",
+            "seems",
+            "several",
+            "shall",
+            "she",
+            "should",
+            "shouldn't",
+            "since",
+            "so",
+            "some",
+            "somebody",
+            "something",
+            "somewhere",
+            "still",
+            "stuff",
+            "such",
+            "than",
+            "t",
+            "that",
+            "the",
+            "their",
+            "theirs",
+            "them",
+            "then",
+            "there",
+            "these",
+            "they",
+            "thing",
+            "things",
+            "this",
+            "those",
+            "through",
+            "thus",
+            "to",
+            "too",
+            "top",
+            "two",
+            "under",
+            "unless",
+            "until",
+            "up",
+            "upon",
+            "us",
+            "use",
+            "v",
+            "ve",
+            "very",
+            "want",
+            "was",
+            "we",
+            "well",
+            "went",
+            "were",
+            "what",
+            "when",
+            "where",
+            "which",
+            "while",
+            "who",
+            "whom",
+            "why",
+            "will",
+            "with",
+            "without",
+            "won",
+            "would",
+            "x",
+            "yes",
+            "yet",
+            "you",
+            "you",
+            "your",
+            "yours"
+        };
         /// Lista de palavras que não devem ser consideradas
-        private static readonly List<string> Filters = new List<string>{
-            /*A*/   "a","as","antes","amanhã","ainda","antigamente","agora","aqui", "ali" ,"adiante", "abaixo" ,"aquém" ,"acolá", "atrás", "além", "aonde", "acima" , "algures","aí","aliás","assim","acaso","apenas","até","aquele","aquela","aqueles","aquelas","aquilo",
-            /*B*/   "bem","bastante",
-            /*C*/   "cedo","como","certamente","connosco","comigo",
-            /*D*/   "dantes","depois","dentro","detrás","debaixo","depressa","devagar","demasiado","decerto",
-            /*E*/   "então","enfim","efectivamente","exclusivamente","ele","eles","elas","eu", "este", "esta", "estes", "estas","esse", "essa", "esses", "essas",
-            /*F*/   "fora",
-            /*H*/   "hoje",
-            /*I*/   "inclusivamente","isto","isso",
-            /*J*/   "jamais","já",
-            /*L*/   "logo","lá","longe",
-            /*M*/   "melhor","mal","muito","mais","menos","meu","minha","meus","minhas",
-            /*N*/   "não","nunca","nada","nem","nós","nos","nosso","nossa","nossos","nossas",
-            /*O*/   "ontem","ora","outrora","onde","o","os",
-            /*P*/   "primeiro","perto","posto","pior","principalmente","pouco","possivelmente","provavelmente","primeiramente",
-            /*Q*/   "quase","quão","quanto","que",
-            /*S*/   "sempre","sobretudo","sim","salvo","senão","somente","simplesmente","só","seu","sua","seus","suas",
-            /*T*/   "tarde","tanto","tão","tudo","todo","talvez","também","teu","tua","teus","tuas",
-            /*R*/   "realmente",
-            /*U*/   "unicamente","ultimamente",
-            /*V*/   "vocês","vós","vosso","vossa","vossos","vossas"   };
+        private static readonly List<string> Filters = new List<string>
+        {
+            "apesar","a","abaixo","acaso","acerca","acima","acolá","adiante","agora","ah","ah-ah","ai","aí","ao",
+            "ainda","além","algo","alguém","algum","alguns","algures","alhures","ali","aliás","alô",
+            "ambos","amanhã","anterior","anteriormente","antes","antigamente","aonde","apart",
+            "apenas","aquela","aquelas","aquele","aqueles","aquilo","aquém","aqui","aquilo","as",
+            "assim","até","atrás","através","atual","atualmente","bastante","bem","bom","cá","cada",
+            "caminho","causa","cedo","certamente","chamada","chamado","co","coisas","colocado",
+            "colocar","com","comigo","como","contudo","connosco","couldn","cujo","d","de","da","das",
+            "dantes","do","dos","define","deixar","dela","dele","deles","demais","demasiado","demasiadamente",
+            "decerto","depois","depressa","desde","desligado","devagar","deve","deveria","didn","diferente",
+            "directamente","disse","disso","dito","diz","deste","destes","desta","destas","dois","don","e","é","eis","efectivamente","ela",
+            "elas","ele","eles","Eles","eles","em","enfim","enquanto","Enquanto","então","entre","era","eram",
+            "éramos","eras","éreis","és","esta","estas","está","estais","estamos","estão","estar","estás","estava",
+            "estavam","estávamos","estavas","estáveis","este","estes","esteve","estive","estivemos","estiveram",
+            "esse","esses","essa","essas","estiveste","estou","etc","eu","excepcionalmente","excepto","exceto","exclusivamente","faz","fazer",
+            "feito","fez","final","finalizado","foi","fomos","fora","foram","foste","fostes","frequente","fui","há","hoje",
+            "i.e","ides","inclusivamente","inicial","ir","isn","isso","isto","it's","itself","já","jamais","ligado","ll","lá","logo",
+            "m","mais","mal","mas","máximo","melhor","menor","menos","mesmo","meu","minha","muito","muitos","must",
+            "nada","não","nele","nesta","nem","nisso","nither","no","na","nos","nas","Nos","nós","nossa","nosso","novamente",
+            "nt","o","obter","obtido","Oh","ok","okay","onde","ora","os","ou","outra","outrem","outro","outrora","outrossim",
+            "par","para","parada","parado","parece","pela","pelo","pelos","pelas","pensa","pensar","perto","pode","podem","podia","por","porém",
+            "porque","porquê","pot","pouco","poucos","precisa","prefer","preferia","preferir","primeiro","principalmente",
+            "primeiramente","provavelmente","própria","própria","próprio","próximo","qualquer","Quando","quando",
+            "quanto","quão","quase","quatro","que","quem","Quem","quer","re","realmente","repetir","s","sabe","salvo",
+            "são","se","seguinte","sem","sempre","sendo","ser","seu","sim","sob","sobre","sois","somente","somos","sou",
+            "Sr","sua","suficiente","t","tal","Talvês","talvez","também","tanto","tão","tem","têm","temos","tendes","tenho",
+            "tens","ter","teu","teve","tinha","tinham","tínhamos","tinhas","tínheis","tive","tivemos","tiveram","tiveste","tivestes",
+            "tipo","todo","todos","topo","três","tu","tua","tudo","último","um","uma","unicamente","up","ultimamente","use","vai","vais",
+            "vamos","vão","várias","vários","ve","vê","vem","vistas","você","vocês","vós","vosso","vou"
+        };
 
 
         /// <summary>
@@ -73,61 +287,54 @@ namespace Context.NLP.Algorithms
         /// </returns>
         public static List<string> GetEntities(string text)
         {
-            Dictionary<string, int> entities;
-            var temp = text;
-            /// Filtra entidades compostas
-            temp = _filtertextwithregex(temp, out entities, "([A-Z][a-z]*)[\\s-]([A-Z][a-z]*)");
-            /// Filtra entitades duplas
-            temp = _filtertextwithregex(temp, out entities, "[A-Z]([a-z]+|\\.)(?:\\s+[A-Z]([a-z]+|\\.))*(?:\\s+[a-z][a-z\\-]+){0,2}\\s+[A-Z]([a-z]+|\\.)");
-            /// Filtra entidade simples ou separadas por hífens
-            _filtertextwithregex(temp, out entities, "[A-Z][a-z|-]+");
+            var entities = new Dictionary<string, double>();
+            _filtertextwithregex(text, entities, "[\"A-Z|À|È|Ì|Ò|Ù|Á|É|Í|Ó|Ú|Â|Ê|Î|Ô|Û|Ã|Õ|Ç|ð][a-z|à|è|ì|ò|ù|á|é|í|ó|ú|â|ê|î|ô|û|ã|õ|ç|ð]+(\\s[de|da|e|ou|of the|of|and|or|e de]*)[A-Z|À|È|Ì|Ò|Ù|Á|É|Í|Ó|Ú|Â|Ê|Î|Ô|Û|Ã|Õ|Ç|ð][a-z|à|è|ì|ò|ù|á|é|í|ó|ú|â|ê|î|ô|û|ã|õ|ç|ð\"]+", 5);
+            _filtertextwithregex(text, entities, "(\"[A-Z|À|È|Ì|Ò|Ù|Á|É|Í|Ó|Ú|Â|Ê|Î|Ô|Û|Ã|Õ|Ç|ð][a-z|à|è|ì|ò|ù|á|é|í|ó|ú|â|ê|î|ô|û|ã|õ|ç|ð]+)(\\s)([A-Z|À|È|Ì|Ò|Ù|Á|É|Í|Ó|Ú|Â|Ê|Î|Ô|Û|Ã|Õ|Ç|ð][a-z|à|è|ì|ò|ù|á|é|í|ó|ú|â|ê|î|ô|û|ã|õ|ç|ð]+)\"", 3);
+            _filtertextwithregex(text, entities, "[\\w]+", 0.5);
 
 
-            var sorted = (from kv in entities orderby kv.Value select kv).ToList().OrderByDescending(key => key.Value);
-            List<string> returnList = new List<string>();
-            foreach (var keyValue in sorted.ToList())
-            {
-                returnList.Add(keyValue.Key);
-            }
-            return returnList;
+            return (from kv in entities orderby kv.Value select kv)
+                .OrderByDescending(key => key.Value)
+                .Take(15)
+                .Select(keyValue => keyValue.Key).
+                ToList();
         }
 
         /// <summary>
         /// Utiliza uma expressão regular para extrair entidades e verificar número de vezes que essa entidade ocorre no texto.
         /// Utiliza um método auxiliar para verificar se a entidade encontrada não se encontra na lista de filtros.
         /// </summary>
-        /// 
         /// <param name="text">
-        /// Texto a ser analisado
+        ///     Texto a ser analisado
         /// </param>
-        /// 
         /// <param name="entitiesDictionary">
-        /// entitiesDictionary Dicionário que representa o par NomeEntidade e número de vezes que foi encontrada no texto
+        ///     entitiesDictionary Dicionário que representa o par NomeEntidade e número de vezes que foi encontrada no texto
         /// </param>
-        /// 
         /// <param name="regularExpression">
-        /// regularExpression expressão regular a encontrar
+        ///     regularExpression expressão regular a encontrar
         /// </param>
+        /// <param name="weight">
         /// 
+        /// </param>
         /// <returns>
         /// Texto sem as entidades encontradas
         /// </returns>
-        private static string _filtertextwithregex(string text, out Dictionary<string, int> entitiesDictionary, string regularExpression)
+        private static void _filtertextwithregex(string text, Dictionary<string, double> entitiesDictionary, string regularExpression, double weight)
         {
-            entitiesDictionary = new Dictionary<string, int>();
-            var regex = new Regex(regularExpression);
+            if (entitiesDictionary == null) throw new ArgumentNullException("entitiesDictionary");
+
+            var regex = new Regex(regularExpression, RegexOptions.IgnorePatternWhitespace | RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace);
             foreach (
                       var match in regex.Matches(text)
                           .Cast<Match>()
                           .Select(itemmatch => itemmatch.ToString())
                           .Where(IsValidEntity))
             {
-                int currentcount;
+                double currentcount;
                 entitiesDictionary.TryGetValue(match, out currentcount);
-                entitiesDictionary[match] = currentcount + 1;
+                entitiesDictionary[match] = currentcount + weight;
                 text = text.Replace(match, "");
             }
-            return text;
         }
         /// <summary>
         /// Filtra palavras segundo a lista de filtros presente.
@@ -140,7 +347,9 @@ namespace Context.NLP.Algorithms
         /// </returns>
         private static bool IsValidEntity(string match)
         {
-            return FiltersEnglish.All(filter => !match.ToLower().StartsWith(filter) && !match.ToLower().Equals(filter) && !match.ToLower().EndsWith(filter));
+            return Filters.All(filter => !match.ToLower().Equals(filter)) && FiltersEnglish.All(filter => !match.ToLower().Equals(filter));
+
         }
     }
 }
+

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Context.NLP.Algorithms;
+using EggOn.Context.NLP.Algorithms;
 
 namespace EggOn.Context.NLP.Services
 {

@@ -33,7 +33,7 @@ namespace FlowOptions.EggOn.Data.Models
             {
                 using (var database = new EggOnDatabase())
                 {
-                    return database.Fetch<Field>("WHERE ContainerId = @0", this.Id);
+                    return database.Fetch<Field>("WHERE ContainerId = @0", Id);
                 }
             }
         }
@@ -43,14 +43,14 @@ namespace FlowOptions.EggOn.Data.Models
         {
             get
             {
-                if (this.Type != ContainerTypes.Local)
+                if (Type != ContainerTypes.Local)
                 {
                     throw new NotImplementedException();
                 }
 
                 using (var database = new EggOnDatabase())
                 {
-                    return database.Fetch<dynamic>("SELECT * FROM " + database.CleanTableName(this.TableName));
+                    return database.Fetch<dynamic>("SELECT * FROM " + database.CleanTableName(TableName));
                 }
             }
         }
@@ -62,7 +62,7 @@ namespace FlowOptions.EggOn.Data.Models
             {
                 using (var database = new EggOnDatabase())
                 {
-                    return database.SingleOrDefault<Container>(this.ParentContainerId);
+                    return database.SingleOrDefault<Container>(ParentContainerId);
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace FlowOptions.EggOn.Data.Models
             {
                 using (var database = new EggOnDatabase())
                 {
-                    return database.Fetch<Container>("WHERE ParentContainerId = @0", this.Id);
+                    return database.Fetch<Container>("WHERE ParentContainerId = @0", Id);
                 }
             }
         }

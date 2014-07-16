@@ -16,14 +16,14 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("roles"), HttpGet]
         public List<RoleDto> GetAllUsers()
         {
-            if (!this.CurrentUser.HasRole("Administrator"))
+            if (!CurrentUser.HasRole("Administrator"))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, new {
                     Error = "You need to be administrator to see this resource."
                 }));
             }
 
-            List<Role> roles = this.Database.Fetch<Role>("");
+            var roles = Database.Fetch<Role>("");
 
             return Mapper.Map<List<Role>, List<RoleDto>>(roles);
         }
@@ -32,7 +32,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("roles"), HttpPost]
         public HttpResponseMessage CreateRole([FromBody] RoleDto data)
         {
-            if (!this.CurrentUser.HasRole("Administrator"))
+            if (!CurrentUser.HasRole("Administrator"))
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.Forbidden, new
                 {
@@ -40,7 +40,7 @@ namespace FlowOptions.EggOn.Base.Controllers
                 }));
             }
 
-            Role role = new Role();
+            var role = new Role();
 
             role.Id = GuidComb.NewGuid();
 
@@ -48,7 +48,7 @@ namespace FlowOptions.EggOn.Base.Controllers
 
             role.Name = data.Name;
 
-            this.Database.Insert(role);
+            Database.Insert(role);
 
             return Request.CreateResponse<RoleDto>(HttpStatusCode.Created, Mapper.Map<RoleDto>(role));
         }
@@ -57,7 +57,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("roles/{roleId:guid}"), HttpGet]
         public RoleDto GetRole(Guid roleId)
         {
-            Role role = this.Database.SingleOrDefault<Role>(roleId);
+            var role = Database.SingleOrDefault<Role>(roleId);
 
             if (role == null)
             {
@@ -71,12 +71,12 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("roles/{roleId:guid}"), HttpPut]
         public RoleDto UpdateRole(Guid roleId, [FromBody] RoleDto data)
         {
-            if (!this.CurrentUser.HasRole("Administrator"))
+            if (!CurrentUser.HasRole("Administrator"))
             {
                 throw Forbidden("You need to be administrator to update this resource.");
             }
 
-            Role role = this.Database.SingleOrDefault<Role>(roleId);
+            var role = Database.SingleOrDefault<Role>(roleId);
 
             if (role == null)
             {
@@ -86,7 +86,7 @@ namespace FlowOptions.EggOn.Base.Controllers
             if (data.Name != null)
                 role.Name = data.Name;
 
-            this.Database.Update(role, new string[] { "Name" });
+            Database.Update(role, new string[] { "Name" });
 
             return Mapper.Map<RoleDto>(role);
         }
@@ -95,19 +95,19 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("roles/{roleId:guid}"), HttpDelete]
         public RoleDto DeleteRole(Guid roleId)
         {
-            if (!this.CurrentUser.HasRole("Administrator"))
+            if (!CurrentUser.HasRole("Administrator"))
             {
                 throw Forbidden("You need to be administrator to delete this resource.");
             }
 
-            Role role = this.Database.SingleOrDefault<Role>(roleId);
+            var role = Database.SingleOrDefault<Role>(roleId);
 
             if (role == null)
             {
                 throw NotFound("Role not Found.");
             }
 
-            this.Database.Delete(role);
+            Database.Delete(role);
 
             return Mapper.Map<RoleDto>(role);
         }
@@ -116,7 +116,7 @@ namespace FlowOptions.EggOn.Base.Controllers
         [Route("roles/current"), HttpGet]
         public List<RoleDto> FetchCurrentRoles()
         {
-            return Mapper.Map<List<RoleDto>>(this.CurrentUser.Roles);
+            return Mapper.Map<List<RoleDto>>(CurrentUser.Roles);
         }
     }
 }

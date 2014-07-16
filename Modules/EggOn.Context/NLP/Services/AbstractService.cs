@@ -5,14 +5,14 @@ namespace EggOn.Context.NLP.Services
 {
     public abstract class AbstractService : IContextService
     {
-        protected string Title { get; set; }
-        protected string Text { get; set; }
+        protected static string Title { get; set; }
+        protected static string Text { get; set; }
 
         public MinedObject GetContext(string title, string text)
         {
             Title = title;
             Text = text.Replace("\n", " ");
-
+           
             return new MinedObject
             {
                 Summary = GetSummary(),
