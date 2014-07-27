@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace Context.NLP.Services
+
+namespace EggOn.Context.NLP.Services
 {
 
     public interface IContextService
     {
-        MinedObject GetContext(String Title, String Text);
+        MinedObject GetContext(String title, String text);
     }
 
     public class MinedObject

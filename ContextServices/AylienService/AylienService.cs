@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using EggOn.Context.NLP.Services;
 using Newtonsoft.Json;
 
-namespace EggOn.Context.NLP.Services
+namespace AylienService
 {
     /// <summary>
-    /// Classe que representa a implementação concreta da classe \c AbstractService. 
-    /// 
     /// Caracteriza-se pela a utilização do serviço externo diponibilizado pela empresa Aylien.
     /// 
     /// Este serviço recebe na QueryString um parametro do tipo "&text=..." e retorna um objecto 
@@ -18,19 +17,19 @@ namespace EggOn.Context.NLP.Services
     /// http://aylien.com/text-api-doc
     /// </summary>
 
-
-    public class RemoteService : AbstractService
+    public class AylienService : IContextService
     {
         private readonly String _servicelink;
-        public RemoteService()
+        public AylienService()
         {
             _servicelink = "https://aylien-text.p.mashape.com/";
 
         }
 
-        protected override string GetSentiment()
+
+        internal string GetSentiment(string text)
         {
-            var request = WebRequest.Create(_servicelink + "sentiment?text=" + Text);
+            var request = WebRequest.Create(_servicelink + "sentiment?text=" + text);
             // If required by the server, set the credentials.
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Headers.Add("X-Mashape-Authorization", "MNJVFUtDMGjo6bQFZ7wHeMu5DIdTtDnA");
@@ -52,16 +51,16 @@ namespace EggOn.Context.NLP.Services
             }
         }
 
-        protected override string GetLanguage()
+        internal string GetLanguage(string text)
         {
-            var request = WebRequest.Create(_servicelink + "language?text=" + Text);
+            var request = WebRequest.Create(_servicelink + "language?text=" + text);
             // If required by the server, set the credentials.
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Headers.Add("X-Mashape-Authorization", "MNJVFUtDMGjo6bQFZ7wHeMu5DIdTtDnA");
             // Get the response.
             using (var response = request.GetResponse())
             {
-                 // Get the stream containing content returned by the server.
+                // Get the stream containing content returned by the server.
                 var dataStream = response.GetResponseStream();
 
 
@@ -76,9 +75,9 @@ namespace EggOn.Context.NLP.Services
             }
         }
 
-        protected override string GetCategory()
+        internal string GetCategory(string text)
         {
-            var request = WebRequest.Create(_servicelink + "classify?text=" + Text);
+            var request = WebRequest.Create(_servicelink + "classify?text=" + text);
             // If required by the server, set the credentials.
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Headers.Add("X-Mashape-Authorization", "MNJVFUtDMGjo6bQFZ7wHeMu5DIdTtDnA");
@@ -117,10 +116,10 @@ namespace EggOn.Context.NLP.Services
 
         }
 
-        protected override string GetSummary()
+        internal string GetSummary(string text, string title)
         {
             // Create a request for the URL. 
-            var request = WebRequest.Create(_servicelink + "summarize?text=\"" + Text + "\"&title=Test" + Title);
+            var request = WebRequest.Create(_servicelink + "summarize?text=\"" + text + "\"&title=Test" + title);
             // If required by the server, set the credentials.
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Headers.Add("X-Mashape-Authorization", "MNJVFUtDMGjo6bQFZ7wHeMu5DIdTtDnA");
@@ -148,18 +147,18 @@ namespace EggOn.Context.NLP.Services
             }
         }
 
-        protected override List<string> GetEntities()
+        internal List<string> GetEntities(string text)
         {
 
             // Create a request for the URL. 
-            var request = WebRequest.Create(_servicelink + "entities?text=" + Text);
+            var request = WebRequest.Create(_servicelink + "entities?text=" + text);
             // If required by the server, set the credentials.
             request.Credentials = CredentialCache.DefaultCredentials;
             request.Headers.Add("X-Mashape-Authorization", "MNJVFUtDMGjo6bQFZ7wHeMu5DIdTtDnA");
             // Get the response.
             using (var response = request.GetResponse())
             {
-                 // Get the stream containing content returned by the server.
+                // Get the stream containing content returned by the server.
                 var dataStream = response.GetResponseStream();
 
 
@@ -178,6 +177,20 @@ namespace EggOn.Context.NLP.Services
                 }
                 return toReturn;
             }
+        }
+
+        public MinedObject GetContext(string title, string text)
+        {
+            if (text == null) throw new ArgumentNullException("text");
+            var obj = new MinedObject
+            {
+                Entities = GetEntities(text),
+                Summary = GetSummary(text, title),
+                Category = GetCategory(text),
+                Language = GetLanguage(text),
+                Sentiment = GetSentiment(text)
+            };
+            return obj;
         }
     }
 }

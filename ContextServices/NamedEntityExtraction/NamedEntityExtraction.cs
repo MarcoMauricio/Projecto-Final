@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace EggOn.Context.NLP.Algorithms
+namespace NamedEntityExtraction
 {
-    class NamedEntityExtraction
+    internal class NamedEntitiesExtraction
     {
         private static readonly List<string> FiltersEnglish = new List<string>
         {
@@ -285,7 +285,7 @@ namespace EggOn.Context.NLP.Algorithms
         /// Lista de nomes das entidades ordenada de forma descendente pelo número de vezes que cada uma 
         /// das entidades foi encontrada quando o texto acaba de ser analisado
         /// </returns>
-        public static List<string> GetEntities(string text)
+        protected internal static List<string> GetEntities(string text)
         {
             var entities = new Dictionary<string, double>();
             _filtertextwithregex(text, entities, "[\"A-Z|À|È|Ì|Ò|Ù|Á|É|Í|Ó|Ú|Â|Ê|Î|Ô|Û|Ã|Õ|Ç|ð][a-z|à|è|ì|ò|ù|á|é|í|ó|ú|â|ê|î|ô|û|ã|õ|ç|ð]+(\\s[de|da|e|ou|of the|of|and|or|e de]*)[A-Z|À|È|Ì|Ò|Ù|Á|É|Í|Ó|Ú|Â|Ê|Î|Ô|Û|Ã|Õ|Ç|ð][a-z|à|è|ì|ò|ù|á|é|í|ó|ú|â|ê|î|ô|û|ã|õ|ç|ð\"]+", 5);

@@ -1,22 +1,25 @@
 ﻿using System;
 using System.IO;
-using Context.NLP.Services;
 using EggOn.Context.Annotations;
 using EggOn.Context.NLP.Services;
 using EggOn.Context.Utils;
+using System.Collections.Generic;
 
 namespace EggOn.Context.NLP
 {
-
-    public static class ContextCore
+    /// <summary>
+    /// Classe intermédia entre os serviços de contextualização e a web API.
+    /// </summary>
+    /// 
+    public class ContextCore
     {
+        private List<IContextService> services;
 
-        /// <summary>
-        /// Classe intermédia entre os serviços de contextualização e a web API.
-        /// </summary>
-        /// 
-        private static readonly RemoteService AylienService = new RemoteService();
-        private static readonly LocalService LocalService = new LocalService();
+        public ContextCore(List<IContextService> services)
+        {
+            if (services == null) throw new NullReferenceException();
+            this.services = services;
+        }
         /// <summary>
         ///  Método a ser chamado para haver a obtenção do contexto do ficheiro a ser considerado
         /// </summary>
@@ -25,20 +28,22 @@ namespace EggOn.Context.NLP
         /// Classe representativa da contextualização do documento. 
         /// É caracterizada pelos campos referentes a cada resultado de contextualização, entidades, sumário, etc.
         /// </returns>
-        public static MinedObject GetContext([NotNull] string filePath)
+        public MinedObject GetContext(String filePath)
         {
+            var title = filePath.Split('/')[filePath.Split('/').Length - 1];
             var text = filePath.EndsWith(".pdf") ? PdfUtils.GetPdfText(filePath) : File.ReadAllText(filePath);
-            text = text.Replace("\n", "");
-            text = text.Replace("\r", " . ");
-            text = text.Replace("\t", " . ");
-            try
+            foreach (IContextService service in services)
             {
-                return AylienService.GetContext("", text.Trim());
+                try
+                {
+                    return service.GetContext(filePath, text);
+                }
+                catch (Exception)
+                {
+
+                }
             }
-            catch (Exception)
-            {
-                return LocalService.GetContext("", text.Trim());
-            }
+            return null;
         }
     }
 }

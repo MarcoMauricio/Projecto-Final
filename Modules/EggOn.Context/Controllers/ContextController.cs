@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using EggOn.Context.DependencyInjection;
 
 namespace FlowOptions.EggOn.Context.Controllers
 {
@@ -16,14 +17,15 @@ namespace FlowOptions.EggOn.Context.Controllers
     {
         private readonly DocumentService _documentsHelper;
         private readonly EntitiesService _entitiesHelper;
-        private static List<string> SupportedTypes = new List<string> { "txt", "pdf" };
+        private static readonly List<string> SupportedTypes = new List<string> { "txt", "pdf" };
+        private ContextCore _contextCore;
+        private readonly DependencyInjector _injector;
 
         public ContextController()
         {
             _documentsHelper = new DocumentService();
-
             _entitiesHelper = new EntitiesService();
-
+            _injector = new DependencyInjector();
         }
         [Route("context"), HttpGet]
         public List<Document> GetAllDocuments()
@@ -37,7 +39,9 @@ namespace FlowOptions.EggOn.Context.Controllers
         public HttpResponseMessage CreateContext(Message message)
         {
             if (!checkSupport(message.FilePath)) return Request.CreateResponse(HttpStatusCode.NotAcceptable, message);
-            var item = ContextCore.GetContext(message.FilePath);
+            _contextCore = _injector.GetContextCore();
+            var item = _contextCore.GetContext(message.FilePath);
+            if (item == null) { return Request.CreateResponse(HttpStatusCode.NotFound, message); }
             // Document
             var doc = new Document
             {
@@ -47,7 +51,7 @@ namespace FlowOptions.EggOn.Context.Controllers
                 FileName = message.FileName,
                 Summary = item.Summary,
                 Category = item.Category,
-                DateTime = new BsonDateTime(System.DateTime.Now)
+                DateTime = new BsonDateTime(DateTime.Now)
             };
 
             _documentsHelper.CreateDocument(doc);
@@ -76,11 +80,7 @@ namespace FlowOptions.EggOn.Context.Controllers
 
         private bool checkSupport(string path)
         {
-            foreach (var item in SupportedTypes)
-            {
-                if (path.EndsWith(item)) return true;
-            }
-            return false;
+            return SupportedTypes.Any(path.EndsWith);
         }
     }
     public class Message
